@@ -82,7 +82,7 @@ namespace args_parse
 	bool Parcer::parce()
 	{
 		const int LENGHT = argc;
-		void (*processes[LENGHT])();
+		void (*processes)();
 		void (*processesWithValue[LENGHT])(string);
 		string values[LENGHT];
 
@@ -104,7 +104,7 @@ namespace args_parse
 				 
 				//foundOperator.processWithValue(value);
 				unsigned length = std::size(processesWithValue);
-				processesWithValue[length - 1] = foundOperator.processWithValue;
+				processesWithValue[length - 1] = *foundOperator.processWithValue;
 				values[length - 1] = value;
 			}
 			else if(nextArgIsNoteOperator && !argAllowsUseValue)
@@ -114,7 +114,8 @@ namespace args_parse
 			else
 			{
 				unsigned length = std::size(processes);
-				processes[length - 1];
+				processes[length - 1] = *foundOperator.process;
+ 
 				//foundOperator.process();
 			}
 		}
