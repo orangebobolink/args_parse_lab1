@@ -81,10 +81,12 @@ namespace args_parse
 
 	bool Parcer::parce()
 	{
-		const int LENGHT = argc;
-		void (*processes)();
-		void (*processesWithValue[LENGHT])(string);
-		string values[LENGHT];
+		typedef void (*processes)();
+		vector<processes> vectorProcesses;
+
+		typedef void (*processesWithValue)(string);
+		vector<processesWithValue> vectorProcessesWithValue;
+		vector<string> values;
 
 		for (int i = 1; i < argc; ++i)
 		{
@@ -103,9 +105,9 @@ namespace args_parse
 				string value(argv[i + 1]);
 				 
 				//foundOperator.processWithValue(value);
-				unsigned length = std::size(processesWithValue);
-				processesWithValue[length - 1] = *foundOperator.processWithValue;
-				values[length - 1] = value;
+ 
+				vectorProcessesWithValue.push_back(*foundOperator.processWithValue);
+				values.push_back(value);
 			}
 			else if(nextArgIsNoteOperator && !argAllowsUseValue)
 			{
@@ -113,8 +115,7 @@ namespace args_parse
 			}
 			else
 			{
-				unsigned length = std::size(processes);
-				processes[length - 1] = *foundOperator.process;
+				vectorProcesses.push_back(*foundOperator.process);
  
 				//foundOperator.process();
 			}
