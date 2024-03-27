@@ -20,7 +20,7 @@ namespace args_parse
 			void(*processWithValueFunction)(string value) = [](string value) {}) : Arg(shortArg, longArg, description,
 				[]() {}, Status::MUST_BE, processWithValueFunction) { }
 
-		bool validateValue(string value) override
+		bool IValidator::validateValue(string value) override
 		{
 			for (const char c : value) {
 				if (!isalpha(c) && !isspace(c))

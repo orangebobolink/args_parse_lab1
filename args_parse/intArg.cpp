@@ -21,7 +21,7 @@ namespace args_parse
 				[]() {}, Status::MUST_BE, processWithValueFunction) { }
 
 
-		bool validateValue(string value) override
+		bool IValidator::validateValue(string value) override
 		{
 			std::string::const_iterator it = value.begin();
 

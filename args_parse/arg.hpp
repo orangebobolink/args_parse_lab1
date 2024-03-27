@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <string>
 
+#include "validator.hpp"
+
 using namespace std;
 
 namespace args_parse
@@ -15,7 +17,7 @@ namespace args_parse
         FORBIDDEN
     };
 
-    class Arg  
+    class Arg 
     {
     private:
         /// Описание аргумента.

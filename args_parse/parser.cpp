@@ -174,6 +174,11 @@ namespace args_parse
 				throw std::invalid_argument("Operator has to have a value");
 			}
 
+			/*if(value != "" && validator->validateValue(value))
+			{
+				throw std::invalid_argument("Invalid value");
+			}*/
+
 			tuple<Arg, string> tuple = make_tuple(foundOperator, value);
 			vectorProcesses.push_back(tuple);
 		}

@@ -10,6 +10,6 @@ namespace args_parse
       * \param Значение.
       * \return Валидно ли значение.
       */
-        virtual bool validateValue(string value) = 0;
+        virtual bool validateValue(std::string value) = 0;
     };
 }

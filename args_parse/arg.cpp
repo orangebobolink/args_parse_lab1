@@ -85,4 +85,10 @@ namespace args_parse
 
 		this->processWithValueFunction(value);
 	}
+
+	bool IValidator::validateValue(string value)
+	{
+		return false;
+	}
+
 }
