@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include "parser.hpp"
-#include <functional>
+
+#include "vectorService.hpp"
 
 namespace args_parse
 {
@@ -33,7 +34,7 @@ namespace args_parse
 		return OperatorType::NOPE;
 	}
 
-	Arg Parser::findLongOperator(string item, string& value)
+	Arg Parser::findLongOperator(string item, string& value) const
 	{
 		for (auto arg : this->args) {
 			auto longArg = arg.getLongArg();
@@ -59,7 +60,7 @@ namespace args_parse
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	Arg Parser::findShortOperator(string item, string& value)
+	Arg Parser::findShortOperator(string item, string& value) const
 	{
 		const int LENGHT_OF_CHAR = 1;
 		for (auto arg : this->args) {
@@ -81,7 +82,7 @@ namespace args_parse
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	tuple<Arg, string> Parser::getOperator(string item, OperatorType operatorType)
+	tuple<Arg, string> Parser::getOperator(string item, OperatorType operatorType) const
 	{
 		string value = "";
 		size_t equalSignPosition = item.find('=');
@@ -117,6 +118,27 @@ namespace args_parse
 		throw std::invalid_argument("operator is invalid");
 	}
 
+	bool Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, Arg foundOperator)
+	{
+		bool nextArgIsNoteOperator = false;
+
+		if (nextElement != NULL)
+		{
+			nextArgIsNoteOperator = isOperator(nextElement) == OperatorType::NOPE;
+		}
+
+		bool argAllowsUseValue = foundOperator.getAcceptingTheValue() != Status::FORBIDDEN;
+
+		if (nextArgIsNoteOperator && !argAllowsUseValue)
+		{
+			throw std::invalid_argument("arg doesn't allow use value");
+		}
+
+		const bool isNextElementValue = nextArgIsNoteOperator && argAllowsUseValue;
+
+		return isNextElementValue;
+	}
+
 	bool Parser::parse()
 	{
 		vector<tuple<Arg,string>> vectorProcesses;
@@ -131,21 +153,9 @@ namespace args_parse
 			auto [foundOperator, value] = getOperator(strItem, operatorType);
 
 			auto nextElement = argv[i + 1];
-			bool nextArgIsNoteOperator = false;
+			bool isNextElementValue = checkIfTheFollowingArgvIsAValue(nextElement, foundOperator);
 
-			if (nextElement != NULL)
-			{
-				nextArgIsNoteOperator = isOperator(argv[i + 1]) == OperatorType::NOPE;
-			}
-
-			bool argAllowsUseValue = foundOperator.getAcceptingTheValue() != Status::FORBIDDEN;
-
-			if(nextArgIsNoteOperator && !argAllowsUseValue)
-			{
-				throw std::invalid_argument("arg doesn't allow use value");
-			}
-
-			if (nextArgIsNoteOperator && argAllowsUseValue)
+			if(isNextElementValue)
 			{
 				if (value != "")
 				{
@@ -161,20 +171,7 @@ namespace args_parse
 			vectorProcesses.push_back(tuple);
 		}
 
-		for (tuple<Arg, string> tuple : vectorProcesses)
-		{
-			Arg arg = std::get<Arg>(tuple);
-			string value = std::get<string>(tuple);
-
-			if(value == "")
-			{
-				arg.process();
-			}
-			else
-			{
-				arg.processWithValue(value);
-			}
-		}
+		invokeProcesses(vectorProcesses);
 
 		return true;
 	}

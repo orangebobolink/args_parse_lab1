@@ -5,6 +5,10 @@ using namespace std;
 
 namespace args_parse
 {
+
+	/**
+     * \brief Может ли аргумент иметь value
+     */
     enum class Status {
         MUST_BE,
         MAYBE,
@@ -14,14 +18,23 @@ namespace args_parse
     class Arg  
     {
     private:
+        /// Описание аргумента.
         string description = "";
     protected:
         char shortArg = ' ';
         string longArg = "";
+        /// Может ли содержать value.
         Status acceptingTheValue = Status::FORBIDDEN;
+        /// Логика без value.
         void (*processFunction)();
+        /// Логика с value.
         void (*processWithValueFunction)(string value);
-        
+
+        /**
+         * \brief Валидирует значение.
+         * \param Значение.
+         * \return Валидно ли значение.
+         */
         virtual bool validationValue(string value);
 
     public:  
