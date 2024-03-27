@@ -1,7 +1,9 @@
 ﻿#include <iostream>
 #include "parser.hpp"
 
+#include "validator.hpp"
 #include "vectorService.hpp"
+#include "stringArg.cpp"
 
 namespace args_parse
 {
@@ -165,6 +167,11 @@ namespace args_parse
 				value = nextElement;
 
 				i++;
+			}
+
+			if(foundOperator.getAcceptingTheValue() == Status::MUST_BE && value == "")
+			{
+				throw std::invalid_argument("Operator has to have a value");
 			}
 
 			tuple<Arg, string> tuple = make_tuple(foundOperator, value);

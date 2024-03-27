@@ -1,9 +1,10 @@
 #include "arg.hpp"
-#include <locale> 
+#include <locale>
+#include "validator.hpp"
 
 namespace args_parse
 {
-	class BoolArg : public Arg
+	class BoolArg : public Arg, public IValidator
 	{
 	public:
 		explicit BoolArg(char shortArg = ' ',
@@ -21,7 +22,7 @@ namespace args_parse
 				[]() {}, Status::MUST_BE, processWithValueFunction) { }
 
 
-		bool validationValue(string value) override
+		bool validateValue(string value) override
 		{
 			string lowerStr = "";
 

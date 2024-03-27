@@ -1,8 +1,9 @@
 #include "arg.hpp"
+#include "validator.hpp"
 
 namespace args_parse
 {
-	class StringArg : public Arg
+	class StringArg : public Arg, public IValidator
 	{
 	public:
 		explicit StringArg(char shortArg = ' ',
@@ -19,7 +20,7 @@ namespace args_parse
 			void(*processWithValueFunction)(string value) = [](string value) {}) : Arg(shortArg, longArg, description,
 				[]() {}, Status::MUST_BE, processWithValueFunction) { }
 
-		bool validationValue(string value) override
+		bool validateValue(string value) override
 		{
 			for (const char c : value) {
 				if (!isalpha(c) && !isspace(c))

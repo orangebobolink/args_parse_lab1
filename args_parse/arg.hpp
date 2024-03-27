@@ -30,13 +30,6 @@ namespace args_parse
         /// Логика с value.
         void (*processWithValueFunction)(string value);
 
-        /**
-         * \brief Валидирует значение.
-         * \param Значение.
-         * \return Валидно ли значение.
-         */
-        virtual bool validationValue(string value);
-
     public:  
         explicit Arg(char shortArg, 
             string longArg,

@@ -3,10 +3,6 @@
 
 namespace args_parse
 {
-	bool Arg::validationValue(string value)
-	{
-		return false;
-	}
 	Arg::Arg(char shortArg,
 		string longArg,
 		string description,
@@ -85,10 +81,6 @@ namespace args_parse
 		if (this->acceptingTheValue == Status::FORBIDDEN)
 		{
 			throw std::invalid_argument("value is forbbiden");
-		}
-		if (validationValue(value))
-		{
-			throw std::invalid_argument("value is invalid");
 		}
 
 		this->processWithValueFunction(value);

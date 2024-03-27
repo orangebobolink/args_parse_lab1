@@ -1,8 +1,9 @@
 #include "arg.hpp"
+#include "validator.hpp"
 
 namespace args_parse
 {
-	class IntArg : public Arg
+	class IntArg : public Arg, public IValidator
 	{
 	public:
 		explicit IntArg(char shortArg = ' ',
@@ -20,7 +21,7 @@ namespace args_parse
 				[]() {}, Status::MUST_BE, processWithValueFunction) { }
 
 
-		bool validationValue(string value) override
+		bool validateValue(string value) override
 		{
 			std::string::const_iterator it = value.begin();
 
