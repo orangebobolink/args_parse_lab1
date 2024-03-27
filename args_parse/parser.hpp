@@ -31,5 +31,6 @@ namespace args_parse
 
 		bool parse();
 		void addArg(Arg arg);
+		void addArgs(vector<Arg> args);
 	};
 }

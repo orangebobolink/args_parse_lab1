@@ -7,12 +7,19 @@ namespace args_parse
 	{
 	public:
 		explicit BoolArg(char shortArg = ' ',
-			string longArg,
+			string longArg = "",
 			string description = "",
 			void (*processFunction)() = []() {},
 			Status acceptingTheValue = Status::FORBIDDEN,
 			void(*processWithValueFunction)(string value) = [](string value) {}) : Arg(shortArg, longArg, description,
 				processFunction, acceptingTheValue, processWithValueFunction) { }
+
+		explicit BoolArg(char shortArg = ' ',
+			string longArg = "",
+			string description = "",
+			void(*processWithValueFunction)(string value) = [](string value) {}) : Arg(shortArg, longArg, description,
+				[]() {}, Status::MUST_BE, processWithValueFunction) { }
+
 
 		bool validationValue(string value) override
 		{
@@ -21,7 +28,7 @@ namespace args_parse
 			for (auto elem : value)
 				lowerStr += std::tolower(elem);
 
-			return lowerStr == "true" || lowerStr == 'false';
+			return lowerStr == "true" || lowerStr == "false";
 		}
 	};
 }

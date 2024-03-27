@@ -82,7 +82,7 @@ namespace args_parse
 
 	void Arg::processWithValue(string value)
 	{
-		if (this->acceptingTheValue != Status::FORBIDDEN)
+		if (this->acceptingTheValue == Status::FORBIDDEN)
 		{
 			throw std::invalid_argument("value is forbbiden");
 		}

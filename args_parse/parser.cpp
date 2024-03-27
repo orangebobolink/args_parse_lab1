@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include "parser.hpp"
+#include <functional>
 
 namespace args_parse
 {
@@ -35,20 +36,21 @@ namespace args_parse
 	Arg Parser::findLongOperator(string item, string& value)
 	{
 		for (auto arg : this->args) {
-			size_t equalSignPosition = item.find(arg.getLongArg());
+			auto longArg = arg.getLongArg();
+			size_t equalSignPosition = item.find(longArg);
 
-			if (equalSignPosition != string::npos && equalSignPosition == 0) {
+			if (equalSignPosition != string::npos && equalSignPosition == 0 && longArg.length() < item.length()) {
 				if (value != "")
 				{
 					throw std::invalid_argument("Multiple value transmission");
 				}
 
-				value = item.substr(arg.getLongArg().length());
+				value = item.substr(longArg.length());
 
 				return arg;
 			}
 
-			if (arg.getLongArg() == item)
+			if (longArg == item)
 			{
 				return arg;
 			}
@@ -81,18 +83,18 @@ namespace args_parse
 
 	tuple<Arg, string> Parser::getOperator(string item, OperatorType operatorType)
 	{
-
 		string value = "";
 		size_t equalSignPosition = item.find('=');
 
 		if (equalSignPosition != string::npos) {
 			value = item.substr(equalSignPosition + 1);
+			item = item.substr(0, equalSignPosition);
 		}
 
 		if (operatorType == OperatorType::LONG)
 		{
 			const int LENGTH_OF_TWO_DASH = 2;
-			item.erase(STARTING_STRING_POSITION, LENGTH_OF_TWO_DASH);
+			item = item.erase(STARTING_STRING_POSITION, LENGTH_OF_TWO_DASH);
 
 			auto arg = findLongOperator(item, value);
 
@@ -115,15 +117,9 @@ namespace args_parse
 		throw std::invalid_argument("operator is invalid");
 	}
 
-
 	bool Parser::parse()
 	{
-		typedef void (*processes)();
-		vector<processes> vectorProcesses;
-
-		typedef void (*processesWithValue)(string);
-		vector<processesWithValue> vectorProcessesWithValue;
-		vector<string> values;
+		vector<tuple<Arg,string>> vectorProcesses;
 
 		for (int i = 1; i < argc; ++i)
 		{
@@ -134,8 +130,20 @@ namespace args_parse
 
 			auto [foundOperator, value] = getOperator(strItem, operatorType);
 
-			bool nextArgIsNoteOperator = isOperator(argv[i + 1]) == OperatorType::NOPE;
+			auto nextElement = argv[i + 1];
+			bool nextArgIsNoteOperator = false;
+
+			if (nextElement != NULL)
+			{
+				nextArgIsNoteOperator = isOperator(argv[i + 1]) == OperatorType::NOPE;
+			}
+
 			bool argAllowsUseValue = foundOperator.getAcceptingTheValue() != Status::FORBIDDEN;
+
+			if(nextArgIsNoteOperator && !argAllowsUseValue)
+			{
+				throw std::invalid_argument("arg doesn't allow use value");
+			}
 
 			if (nextArgIsNoteOperator && argAllowsUseValue)
 			{
@@ -144,29 +152,43 @@ namespace args_parse
 					throw std::invalid_argument("Multiple value transmission");
 				}
 
-				value = argv[i + 1];
+				value = nextElement;
 
-				//foundOperator.processWithValue(value);
-
-				vectorProcessesWithValue.push_back(*foundOperator.processWithValue);
-				values.push_back(value);
+				i++;
 			}
-			else if (nextArgIsNoteOperator && !argAllowsUseValue)
+
+			tuple<Arg, string> tuple = make_tuple(foundOperator, value);
+			vectorProcesses.push_back(tuple);
+		}
+
+		for (tuple<Arg, string> tuple : vectorProcesses)
+		{
+			Arg arg = std::get<Arg>(tuple);
+			string value = std::get<string>(tuple);
+
+			if(value == "")
 			{
-				throw std::invalid_argument("arg doesn't allow use value");
+				arg.process();
 			}
 			else
 			{
-				vectorProcesses.push_back(*foundOperator.process);
-
-				//foundOperator.process();
+				arg.processWithValue(value);
 			}
 		}
 
 		return true;
 	}
+
 	void Parser::addArg(Arg arg)
 	{
 		this->args.push_back(arg);
+	}
+
+	void Parser::addArgs(vector<Arg> args)
+	{
+		for(Arg arg:args)
+		{
+			addArg(arg);
+		}
 	}
 }

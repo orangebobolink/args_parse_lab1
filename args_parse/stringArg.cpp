@@ -6,12 +6,18 @@ namespace args_parse
 	{
 	public:
 		explicit StringArg(char shortArg = ' ',
-			string longArg = "s",
+			string longArg = "",
 			string description = "",
 			void (*processFunction)() = []() {},
 			Status acceptingTheValue = Status::FORBIDDEN,
 			void(*processWithValueFunction)(string value) = [](string value) {}) : Arg(shortArg, longArg, description,
 				processFunction, acceptingTheValue, processWithValueFunction) { }
+
+		explicit StringArg(char shortArg = ' ',
+			string longArg = "s",
+			string description = "",
+			void(*processWithValueFunction)(string value) = [](string value) {}) : Arg(shortArg, longArg, description,
+				[]() {}, Status::MUST_BE, processWithValueFunction) { }
 
 		bool validationValue(string value) override
 		{

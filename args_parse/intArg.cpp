@@ -6,12 +6,19 @@ namespace args_parse
 	{
 	public:
 		explicit IntArg(char shortArg = ' ',
-			string longArg,
+			string longArg = "",
 			string description = "",
 			void (*processFunction)() = []() {},
 			Status acceptingTheValue = Status::FORBIDDEN,
 			void(*processWithValueFunction)(string value) = [](string value) {}) : Arg(shortArg, longArg, description,
 				processFunction, acceptingTheValue, processWithValueFunction) { }
+
+		explicit IntArg(char shortArg = ' ',
+			string longArg = "",
+			string description = "",
+			void(*processWithValueFunction)(string value) = [](string value) {}) : Arg(shortArg, longArg, description,
+				[]() {}, Status::MUST_BE, processWithValueFunction) { }
+
 
 		bool validationValue(string value) override
 		{
