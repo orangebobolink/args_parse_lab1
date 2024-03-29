@@ -19,7 +19,7 @@ int main(int argc, const char ** argv)
 	{
 		parcer.parse();
 	}
-	catch (const invalid_argument err)
+	catch (const invalid_argument& err)
 	{
 		std::cout << err.what()<< std::endl;
 	}
