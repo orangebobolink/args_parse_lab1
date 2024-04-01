@@ -1,11 +1,12 @@
-#include "args_parse/parser.hpp"
 #include <iostream>
 #include <args/arg.hpp>
 #include <args/boolArg.hpp>
 #include <args/intArg.hpp>
 #include <args/stringArg.hpp>
+#include <args/emptyArg.hpp>
+#include <vector>
+#include <args_parse/parser.hpp>
 
-using namespace args_parse;
 using namespace args;
 
 std::vector<Arg> getTestArgs();
@@ -15,6 +16,10 @@ int main(int argc, const char ** argv)
 	Parser parcer(argc, argv);
 
 	auto args = getTestArgs();
+
+	std::cout << "reference to polymorphic base: " << typeid(args[0]).name() << '\n';
+
+
 	parcer.addArgs(args);
 
 	try
@@ -31,7 +36,7 @@ std::vector<Arg> getTestArgs()
 {
 	std::vector<Arg> args;
 
-	StringArg help('h', "help",
+	EmptyArg help('h', "help",
 		"It's help operation",
 		[]()
 		{

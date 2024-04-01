@@ -3,42 +3,17 @@
 
 namespace args 
 {
-	Arg::Arg(char shortArg,
-		std::string longArg,
-		std::string description,
-		void (*processFunction)() ,
-		Status acceptingTheValue,
-		void(*processWithValueFunction)(std::string value))
+	Arg::Arg(char shortArg, 
+		std::string longArg, 
+		std::string description, 
+		void(*processFunction)(),
+		void(* processWithValueFunction)(std::string value))
 	{
 		this->longArg = longArg;
 		this->shortArg = shortArg;
 		this->description = description;
 		this->processFunction = processFunction;
-		this->acceptingTheValue = acceptingTheValue;
 		this->processWithValueFunction = processWithValueFunction;
-	}
-	Arg::Arg(std::string longArg,
-		std::string description,
-		void (*processFunction)(),
-		Status acceptingTheValue,
-		void(*processWithValueFunction)(std::string value))
-		: Arg(' ', longArg, description, processFunction, acceptingTheValue, processWithValueFunction)
-	{
-	}
-	Arg::Arg(char shortArg, 
-		std::string longArg,
-		std::string description,
-		void (*processFunction)())
-		: Arg(shortArg, longArg, description, processFunction, Status::FORBIDDEN, [](std::string value){})
-	{
-	}
-
-	Arg::Arg(char shortArg, 
-		std::string longArg,
-		std::string description,
-		void(*processWithValueFunction)(std::string value))
-		: Arg(' ', longArg, description, []() {}, Status::MUST_BE, processWithValueFunction)
-	{
 	}
 
 	std::string Arg::getDescriptiong() const
@@ -60,11 +35,6 @@ namespace args
 	{
 		return this->longArg;
 	}
-	 
-	Status Arg::getAcceptingTheValue() const
-	{
-		return this->acceptingTheValue;
-	}
 
 	void Arg::process()
 	{
@@ -73,10 +43,10 @@ namespace args
 
 	void Arg::processWithValue(std::string value)
 	{
-		if (this->acceptingTheValue == Status::FORBIDDEN)
+		/*if (this->acceptingTheValue == Status::FORBIDDEN)
 		{
 			throw std::invalid_argument("value is forbbiden");
-		}
+		}*/
 
 		this->processWithValueFunction(value);
 	}

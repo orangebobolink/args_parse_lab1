@@ -1,24 +1,16 @@
 #pragma once
-#include "arg.hpp"
+#include "valueArg.hpp"
 
 namespace args
 {
-	class IntArg : public Arg
+	class IntArg : public ValueArg
 	{
 	public:
-		explicit IntArg(char shortArg = ' ',
+		IntArg(char shortArg = ' ',
 			std::string longArg = "",
 			std::string description = "",
-			void (*processFunction)() = []() {},
-			Status acceptingTheValue = Status::FORBIDDEN,
-			void(*processWithValueFunction)(std::string value) = [](std::string value) {}) : Arg(shortArg, longArg, description,
-				processFunction, acceptingTheValue, processWithValueFunction) { }
-
-		explicit IntArg(char shortArg = ' ',
-			std::string longArg = "",
-			std::string description = "",
-			void(*processWithValueFunction)(std::string value) = [](std::string value) {}) : Arg(shortArg, longArg, description,
-				[]() {}, Status::MUST_BE, processWithValueFunction) { }
+			void(*processWithValueFunction)(std::string value) = [](std::string value) {})
+			: ValueArg(shortArg, longArg, description, processWithValueFunction) { }
 
 
 		bool validateValue(std::string value) override;

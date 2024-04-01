@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.28)
 project(args_parse_args LANGUAGES CXX)
 
 # Определяем библиотеку и указываем из чего она состоит.
-add_library(args STATIC boolArg.hpp stringArg.hpp intArg.hpp arg.hpp "arg.cpp" "stringArg.cpp" "intArg.cpp" "boolArg.cpp")
+add_library(args STATIC boolArg.hpp stringArg.hpp intArg.hpp arg.hpp "arg.cpp" "stringArg.cpp" "intArg.cpp" "boolArg.cpp" "emptyArg.cpp" "valueArg.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET args PROPERTY CXX_STANDARD 17)
