@@ -1,9 +1,6 @@
 ﻿#include <iostream>
 #include "parser.hpp"
-
-#include "validator.hpp"
 #include "vectorService.hpp"
-#include "stringArg.cpp"
 
 namespace args_parse
 {
@@ -19,30 +16,30 @@ namespace args_parse
 		this->args.clear();
 	}
 
-	OperatorType Parser::isOperator(string str)
+	OperatorType Parser::isOperator(const std::string str)
 	{
 		size_t pos = str.find("--");
 
-		if (pos != string::npos && pos == STARTING_STRING_POSITION) {
+		if (pos != std::string::npos && pos == STARTING_STRING_POSITION) {
 			return OperatorType::LONG;
 		}
 
 		pos = str.find("-");
 
-		if (pos != string::npos && pos == STARTING_STRING_POSITION) {
+		if (pos != std::string::npos && pos == STARTING_STRING_POSITION) {
 			return OperatorType::SHORT;
 		}
 
 		return OperatorType::NOPE;
 	}
 
-	Arg Parser::findLongOperator(string item, string& value) const
+	args::Arg Parser::findLongOperator(std::string item, std::string& value) const
 	{
 		for (auto arg : this->args) {
 			auto longArg = arg.getLongArg();
-			size_t equalSignPosition = item.find(longArg);
+			const size_t equalSignPosition = item.find(longArg);
 
-			if (equalSignPosition != string::npos && equalSignPosition == 0 && longArg.length() < item.length()) {
+			if (equalSignPosition != std::string::npos && equalSignPosition == 0 && longArg.length() < item.length()) {
 				if (value != "")
 				{
 					throw std::invalid_argument("Multiple value transmission");
@@ -62,11 +59,11 @@ namespace args_parse
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	Arg Parser::findShortOperator(string item, string& value) const
+	args::Arg Parser::findShortOperator(std::string item, std::string& value) const
 	{
 		const int LENGHT_OF_CHAR = 1;
 		for (auto arg : this->args) {
-			size_t pos = item.find(arg.getShortArg());
+			const size_t pos = item.find(arg.getShortArg());
 			if (pos == 0) {
 				if (pos + LENGHT_OF_CHAR < item.length()) {
 					if (value != "")
@@ -84,12 +81,12 @@ namespace args_parse
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	tuple<Arg, string> Parser::getOperator(string item, OperatorType operatorType) const
+	std::tuple<args::Arg, std::string> Parser::getOperator(std::string item, OperatorType operatorType) const
 	{
-		string value = "";
+		std::string value = "";
 		size_t equalSignPosition = item.find('=');
 
-		if (equalSignPosition != string::npos) {
+		if (equalSignPosition != std::string::npos) {
 			value = item.substr(equalSignPosition + 1);
 			item = item.substr(0, equalSignPosition);
 		}
@@ -101,7 +98,7 @@ namespace args_parse
 
 			auto arg = findLongOperator(item, value);
 
-			tuple<Arg, string> tuple = make_tuple(arg, value);
+			std::tuple<args::Arg, std::string> tuple = make_tuple(arg, value);
 
 			return tuple;
 		}
@@ -112,7 +109,7 @@ namespace args_parse
 			item.erase(STARTING_STRING_POSITION, LENGTH_OF_ONE_DASH);
 
 			auto arg = findShortOperator(item, value);
-			tuple<Arg, string> tuple = make_tuple(arg, value);
+			std::tuple<args::Arg, std::string> tuple = make_tuple(arg, value);
 
 			return tuple;
 		}
@@ -120,7 +117,7 @@ namespace args_parse
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	bool Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, Arg foundOperator)
+	bool Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, args::Arg foundOperator)
 	{
 		bool nextArgIsNoteOperator = false;
 
@@ -129,7 +126,7 @@ namespace args_parse
 			nextArgIsNoteOperator = isOperator(nextElement) == OperatorType::NOPE;
 		}
 
-		bool argAllowsUseValue = foundOperator.getAcceptingTheValue() != Status::FORBIDDEN;
+		const bool argAllowsUseValue = foundOperator.getAcceptingTheValue() != args::Status::FORBIDDEN;
 
 		if (nextArgIsNoteOperator && !argAllowsUseValue)
 		{
@@ -143,7 +140,7 @@ namespace args_parse
 
 	bool Parser::parse()
 	{
-		vector<tuple<Arg,string>> vectorProcesses;
+		std::vector<std::tuple<args::Arg, std::string>> vectorProcesses;
 
 		for (int i = 1; i < argc; ++i)
 		{
@@ -169,7 +166,7 @@ namespace args_parse
 				i++;
 			}
 
-			if(foundOperator.getAcceptingTheValue() == Status::MUST_BE && value == "")
+			if(foundOperator.getAcceptingTheValue() == args::Status::MUST_BE && value == "")
 			{
 				throw std::invalid_argument("Operator has to have a value");
 			}
@@ -179,7 +176,7 @@ namespace args_parse
 				throw std::invalid_argument("Invalid value");
 			}*/
 
-			tuple<Arg, string> tuple = make_tuple(foundOperator, value);
+			std::tuple<args::Arg, std::string> tuple = make_tuple(foundOperator, value);
 			vectorProcesses.push_back(tuple);
 		}
 
@@ -188,14 +185,14 @@ namespace args_parse
 		return true;
 	}
 
-	void Parser::addArg(Arg arg)
+	void Parser::addArg(args::Arg arg)
 	{
 		this->args.push_back(arg);
 	}
 
-	void Parser::addArgs(vector<Arg> args)
+	void Parser::addArgs(std::vector<args::Arg> args)
 	{
-		for(Arg arg:args)
+		for(args::Arg arg:args)
 		{
 			addArg(arg);
 		}

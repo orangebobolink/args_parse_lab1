@@ -2,12 +2,12 @@
 
 namespace args_parse
 {
-	void invokeProcesses(vector<tuple<Arg, string>> vector)
+	void invokeProcesses(std::vector<std::tuple<args::Arg, std::string>> vector)
 	{
-		for (tuple<Arg, string> tuple : vector)
+		for (std::tuple<args::Arg, std::string> tuple : vector)
 		{
-			Arg arg = std::get<Arg>(tuple);
-			string value = std::get<string>(tuple);
+			args::Arg arg = std::get<args::Arg>(tuple);
+			std::string value = std::get<std::string>(tuple);
 
 			if (value == "")
 			{

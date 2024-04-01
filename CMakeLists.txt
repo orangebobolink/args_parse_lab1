@@ -12,5 +12,6 @@ endif()
 project ("args_parse_lab1")
 
 # Include sub-projects.
+add_subdirectory ("args")
 add_subdirectory ("args_parse")
 add_subdirectory ("demo")

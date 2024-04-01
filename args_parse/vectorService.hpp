@@ -1,7 +1,7 @@
 ﻿#pragma once
+#include <args/arg.hpp>
 #include <vector>
 #include <tuple>
-#include "arg.hpp"
 
 namespace args_parse
 {
@@ -15,5 +15,5 @@ namespace args_parse
     ///
     void invokeProcesses(
         /// Вектор процессов.
-        vector<tuple<Arg, string>> vector);
+        std::vector< std::tuple<args::Arg, std::string>> vector);
 } /* namespace args_parse */

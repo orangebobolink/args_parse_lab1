@@ -1,10 +1,13 @@
-#include "args_parse/stringArg.cpp"
 #include "args_parse/parser.hpp"
 #include <iostream>
-#include <args_parse/intArg.cpp>
-#include <args_parse/boolArg.cpp>
+#include <args/arg.hpp>
+#include <args/boolArg.hpp>
+#include <args/intArg.hpp>
+#include <args/stringArg.hpp>
 
 using namespace args_parse;
+using namespace args;
+using namespace std;
 
 vector<Arg> getTestArgs();
 
@@ -19,7 +22,7 @@ int main(int argc, const char ** argv)
 	{
 		parcer.parse();
 	}
-	catch (const invalid_argument& err)
+	catch (const std::invalid_argument& err)
 	{
 		std::cout << err.what()<< std::endl;
 	}

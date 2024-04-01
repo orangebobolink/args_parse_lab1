@@ -1,9 +1,8 @@
 ﻿#pragma once
-#include "arg.hpp"
 #include <vector> 
 #include <tuple>
 
-using namespace std;
+#include "args/arg.hpp"
 
 namespace args_parse
 {
@@ -23,27 +22,27 @@ namespace args_parse
 	private:
 		int argc = 0;
 		const char** argv;
-		vector<Arg> args;
+		std::vector<args::Arg> args;
 		/**
 		 * \brief Является ли строка оператором.
 		 * \param str - входная строка. 
 		 * \return Тип оператора.
 		 */
-		OperatorType isOperator(string str);
+		OperatorType isOperator(const std::string str);
 		/**
 		 * \brief Поиск длинного оператора по всем известным парсеру операторов.
 		 * \param item Предпологаемый оператор.
 		 * \param value Возможное значение оператора.
 		 * \return Найденный оператор.
 		 */
-		Arg findLongOperator(string item, string& value) const;
+		args::Arg findLongOperator(std::string item, std::string& value) const;
 		/**
 		 * \brief Поиск короткого оператора по всем известным парсеру операторов.
 		 * \param item Предпологаемый оператор.
 		 * \param value Возможное значение оператора.
 		 * \return Найденный оператор.
 		 */
-		Arg findShortOperator(string item, string& value) const;
+		args::Arg findShortOperator(std::string item, std::string& value) const;
 		/**
 		 * \brief Получение оператора.
 		* \param item Предпологаемый оператор.
@@ -51,15 +50,15 @@ namespace args_parse
 		 * \return Кортеж оператора и значения.
 		 * \attention Если value = "", то значение у оператора нет.
 		 */
-		tuple<Arg, string> getOperator(string item, OperatorType operatorType) const;
-		bool checkIfTheFollowingArgvIsAValue(const char* nextElement, Arg foundOperator);
+		std::tuple<args::Arg, std::string> getOperator(std::string item, OperatorType operatorType) const;
+		bool checkIfTheFollowingArgvIsAValue(const char* nextElement, args::Arg foundOperator);
 	public:
 		explicit Parser(int argc,
 			const char** argv);
 		~Parser();
 
 		bool parse();
-		void addArg(Arg arg);
-		void addArgs(vector<Arg> args);
+		void addArg(args::Arg arg);
+		void addArgs(std::vector<args::Arg> args);
 	};
 }
