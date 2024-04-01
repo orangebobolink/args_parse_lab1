@@ -7,9 +7,8 @@
 
 using namespace args_parse;
 using namespace args;
-using namespace std;
 
-vector<Arg> getTestArgs();
+std::vector<Arg> getTestArgs();
 
 int main(int argc, const char ** argv)
 {
@@ -28,36 +27,36 @@ int main(int argc, const char ** argv)
 	}
 }
 
-vector<Arg> getTestArgs()
+std::vector<Arg> getTestArgs()
 {
-	vector<Arg> args;
+	std::vector<Arg> args;
 
 	StringArg help('h', "help",
 		"It's help operation",
 		[]()
 		{
-			cout << "Something" << endl;
+			std::cout << "Something" << std::endl;
 		});
 
 	StringArg output('o', "output",
 		"It's output operation",
-		[](string value)
+		[](std::string value)
 		{
-			cout << value << endl;
+			std::cout << value << std::endl;
 		});
 
 	IntArg giveMyAge('g', "giveMyAge",
 		"It has to show my age",
-		[](string value)
+		[](std::string value)
 		{
-			cout << value << endl;
+			std::cout << value << std::endl;
 		});
 
 	BoolArg isMyProgramCool('i', "isMyProgramCool",
 		"It has to show you the truth",
-		[](string value)
+		[](std::string value)
 		{
-			cout << value << endl;
+			std::cout << value << std::endl;
 		});
 
 	args.push_back(help);
