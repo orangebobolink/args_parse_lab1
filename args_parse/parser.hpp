@@ -22,10 +22,10 @@ namespace args_parse
 	private:
 		int argc = 0;
 		const char** argv;
-		std::vector<args::Arg> args;
+		std::vector< std::unique_ptr<args::Arg>> args;
 		/**
 		 * \brief Является ли строка оператором.
-		 * \param str - входная строка. 
+		 * \param str - входная строка.
 		 * \return Тип оператора.
 		 */
 		OperatorType isOperator(const std::string str);
@@ -58,7 +58,7 @@ namespace args_parse
 		~Parser();
 
 		bool parse();
-		void addArg(args::Arg arg);
-		void addArgs(std::vector<args::Arg> args);
+		void addArg(std::unique_ptr<args::Arg> arg);
+		void addArgs(std::vector< std::unique_ptr<args::Arg>> args);
 	};
 }

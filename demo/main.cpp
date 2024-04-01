@@ -9,17 +9,13 @@
 
 using namespace args;
 
-std::vector<Arg> getTestArgs();
+std::vector<std::unique_ptr<Arg>> getTestArgs();
 
-int main(int argc, const char ** argv)
+int main(int argc, const char** argv)
 {
-	Parser parcer(argc, argv);
-
 	auto args = getTestArgs();
 
-	std::cout << "reference to polymorphic base: " << typeid(args[0]).name() << '\n';
-
-
+	args_parse::Parser parcer(argc, argv);
 	parcer.addArgs(args);
 
 	try
@@ -28,14 +24,12 @@ int main(int argc, const char ** argv)
 	}
 	catch (const std::invalid_argument& err)
 	{
-		std::cout << err.what()<< std::endl;
+		std::cout << err.what() << std::endl;
 	}
 }
 
-std::vector<Arg> getTestArgs()
+std::vector< std::unique_ptr<Arg>> getTestArgs()
 {
-	std::vector<Arg> args;
-
 	EmptyArg help('h', "help",
 		"It's help operation",
 		[]()
@@ -64,10 +58,13 @@ std::vector<Arg> getTestArgs()
 			std::cout << value << std::endl;
 		});
 
-	args.push_back(help);
-	args.push_back(output);
-	args.push_back(giveMyAge);
-	args.push_back(isMyProgramCool);
+	std::vector<std::unique_ptr<Arg>> args;
+
+	args.emplace_back(std::make_unique<EmptyArg>(help));
+	args.emplace_back(std::make_unique<EmptyArg>(help));
+	args.push_back(std::make_unique<StringArg>(output));
+	args.push_back(std::make_unique<IntArg>(giveMyAge));
+	args.push_back(std::make_unique<BoolArg>(isMyProgramCool));
 
 	return args;
 }

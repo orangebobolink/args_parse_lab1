@@ -1,6 +1,8 @@
 ﻿#include <iostream>
 #include "parser.hpp"
 #include "vectorService.hpp"
+#include <args/emptyArg.hpp>
+#include <args/valueArg.hpp>
 
 namespace args_parse
 {
@@ -36,7 +38,7 @@ namespace args_parse
 	args::Arg Parser::findLongOperator(std::string item, std::string& value) const
 	{
 		for (auto arg : this->args) {
-			auto longArg = arg.getLongArg();
+			auto longArg = arg->getLongArg();
 			const size_t equalSignPosition = item.find(longArg);
 
 			if (equalSignPosition != std::string::npos && equalSignPosition == 0 && longArg.length() < item.length()) {
@@ -62,8 +64,8 @@ namespace args_parse
 	args::Arg Parser::findShortOperator(std::string item, std::string& value) const
 	{
 		const int LENGHT_OF_CHAR = 1;
-		for (auto arg : this->args) {
-			const size_t pos = item.find(arg.getShortArg());
+		for (auto& arg : this->args) {
+			const size_t pos = item.find(arg->getShortArg());
 			if (pos == 0) {
 				if (pos + LENGHT_OF_CHAR < item.length()) {
 					if (value != "")
@@ -126,7 +128,8 @@ namespace args_parse
 			nextArgIsNoteOperator = isOperator(nextElement) == OperatorType::NOPE;
 		}
 
-		const bool argAllowsUseValue = foundOperator.getAcceptingTheValue() != args::Status::FORBIDDEN;
+		//const bool argAllowsUseValue = foundOperator.getAcceptingTheValue() != args::Status::FORBIDDEN;
+		const bool argAllowsUseValue = typeid(foundOperator).name() == "ValueType";
 
 		if (nextArgIsNoteOperator && !argAllowsUseValue)
 		{
@@ -154,7 +157,7 @@ namespace args_parse
 			auto nextElement = argv[i + 1];
 			bool isNextElementValue = checkIfTheFollowingArgvIsAValue(nextElement, foundOperator);
 
-			if(isNextElementValue)
+			if (isNextElementValue)
 			{
 				if (value != "")
 				{
@@ -166,7 +169,7 @@ namespace args_parse
 				i++;
 			}
 
-			if(foundOperator.getAcceptingTheValue() == args::Status::MUST_BE && value == "")
+			if (typeid(foundOperator).name() == "ValueType" && value == "")
 			{
 				throw std::invalid_argument("Operator has to have a value");
 			}
@@ -185,16 +188,13 @@ namespace args_parse
 		return true;
 	}
 
-	void Parser::addArg(args::Arg arg)
+	void Parser::addArg(std::unique_ptr<args::Arg> arg)
 	{
-		this->args.push_back(arg);
+		this->args.push_back(std::make_unique<args::Arg>(arg));
 	}
 
-	void Parser::addArgs(std::vector<args::Arg> args)
+	void Parser::addArgs(std::vector<std::unique_ptr<args::Arg>> args)
 	{
-		for(args::Arg arg:args)
-		{
-			addArg(arg);
-		}
+		this->args = args;
 	}
 }

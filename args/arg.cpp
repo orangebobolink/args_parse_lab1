@@ -1,13 +1,14 @@
 #include "arg.hpp"
 #include <stdexcept>
 
-namespace args 
+namespace args
 {
-	Arg::Arg(char shortArg, 
-		std::string longArg, 
-		std::string description, 
+
+	Arg::Arg(char shortArg,
+		std::string longArg,
+		std::string description,
 		void(*processFunction)(),
-		void(* processWithValueFunction)(std::string value))
+		void(*processWithValueFunction)(std::string value))
 	{
 		this->longArg = longArg;
 		this->shortArg = shortArg;
