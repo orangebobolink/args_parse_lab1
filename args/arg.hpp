@@ -29,7 +29,7 @@ namespace args
 		void setValue(std::string value)
 		{
 			value = value;
-			hasValue = true;
+			//hasValue = true;
 		}
 
 		const std::string getValue()

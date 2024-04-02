@@ -50,7 +50,7 @@ namespace args_parse
 		 * \attention Если value = "", то значение у оператора нет.
 		 */
 		int getOperator(std::string item, OperatorType operatorType) const;
-		static bool checkIfTheFollowingArgvIsAValue(const char* nextElement, std::unique_ptr<args::Arg> foundOperator);
+		bool checkIfTheFollowingArgvIsAValue(const char* nextElement, const bool argAllowsUseValue);
 	public:
 		Parser(int argc,
 			const char** argv);

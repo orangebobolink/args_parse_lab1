@@ -120,7 +120,7 @@ namespace args_parse
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	bool Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, std::unique_ptr<args::Arg> foundOperator)
+	bool Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, const bool argAllowsUseValue)
 	{
 		bool nextArgIsNoteOperator = false;
 
@@ -128,8 +128,6 @@ namespace args_parse
 		{
 			nextArgIsNoteOperator = isOperator(nextElement) == OperatorType::NOPE;
 		}
-
-		const bool argAllowsUseValue = foundOperator->getHasAValue() == true;
 
 		if (nextArgIsNoteOperator && !argAllowsUseValue)
 		{
@@ -143,7 +141,7 @@ namespace args_parse
 
 	bool Parser::parse()
 	{
-		std::vector<std::unique_ptr<args::Arg>> vectorProcesses;
+		std::vector<args::Arg*> vectorProcesses;
 
 		for (int i = 1; i < argc; ++i)
 		{
@@ -154,10 +152,14 @@ namespace args_parse
 
 			int index = getOperator(strItem, operatorType);
 
-			auto foundOperator = std::move(this->args[index]);
+			auto foundOperator = this->args[index].get();
 
 			auto nextElement = argv[i + 1];
-			bool isNextElementValue = checkIfTheFollowingArgvIsAValue(nextElement, std::move(foundOperator));
+			bool isNextElementValue = false;
+			if (i + 1 < argc) 
+			{
+				isNextElementValue = checkIfTheFollowingArgvIsAValue(nextElement, foundOperator->getHasAValue());
+			}
 
 			if (isNextElementValue)
 			{
@@ -184,7 +186,7 @@ namespace args_parse
 			vectorProcesses.push_back(foundOperator);
 		}
 
-		invokeProcesses(std::move(vectorProcesses));
+		invokeProcesses(vectorProcesses);
 
 		return true;
 	}
@@ -198,7 +200,7 @@ namespace args_parse
 	{
 		for(auto& arg : args)
 		{
-			addArg(move(arg));
+			addArg(std::move(arg));
 		}
 	}
 }

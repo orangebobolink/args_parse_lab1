@@ -10,14 +10,14 @@
 
 using namespace args;
 
-std::vector<Arg*> getTestArgs();
+std::vector<std::unique_ptr<Arg>> getTestArgs();
 
 int main(int argc, const char** argv)
 {
 	auto args = getTestArgs();
 
 	args_parse::Parser parcer(argc, argv);
-	parcer.addArgs(args);
+	parcer.addArgs(std::move(args));
 
 	try
 	{
@@ -29,7 +29,7 @@ int main(int argc, const char** argv)
 	}
 }
 
-std::vector<Arg*> getTestArgs()
+std::vector<std::unique_ptr<Arg>> getTestArgs()
 {
 	EmptyArg help('h', "help",
 		"It's help operation",
@@ -59,13 +59,12 @@ std::vector<Arg*> getTestArgs()
 			std::cout << value << std::endl;
 		});
 
-	std::vector<Arg*> args;
+	std::vector<std::unique_ptr<Arg>> args;
 
-	args.push_back(&help);
-	args.push_back(&help);
-	args.push_back(&output);
-	args.push_back(&giveMyAge);
-	args.push_back(&isMyProgramCool);
+	args.push_back(std::make_unique<args::EmptyArg>(help));
+	args.push_back(std::make_unique<args::StringArg>(output));
+	args.push_back(std::make_unique<args::IntArg>(giveMyAge));
+	args.push_back(std::make_unique<args::BoolArg>(isMyProgramCool));
 
 	return args;
 }

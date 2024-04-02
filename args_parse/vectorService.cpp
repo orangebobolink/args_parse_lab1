@@ -3,7 +3,7 @@
 
 namespace args_parse
 {
-	void invokeProcesses(std::vector<std::unique_ptr<args::Arg>> vector)
+	void invokeProcesses(std::vector<args::Arg*> vector)
 	{
 		for (auto& arg : vector)
 		{

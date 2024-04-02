@@ -84,7 +84,7 @@ TEST_CASE("Parser negative", "[dummy][section][throws]")
             []
             {
                 const char* argv[] = { " ", "--help", "-s" };
-                const int argc = 2;
+                const int argc = 3;
 
                 auto parser = getParser(argc, argv);
 
@@ -96,11 +96,11 @@ TEST_CASE("Parser negative", "[dummy][section][throws]")
 args_parse::Parser getParser(const int argc, const char** argv)
 {
     args_parse::Parser parser(argc, argv);
-    auto args = move(getTestArgs());
+    auto args = std::move(getTestArgs());
 
     for(auto& arg : args)
     {
-        parser.addArg(move(arg));
+        parser.addArg(std::move(arg));
     }
 
     return parser;

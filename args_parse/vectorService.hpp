@@ -16,5 +16,5 @@ namespace args_parse
     ///
     void invokeProcesses(
         /// Вектор процессов.
-		std::vector<std::unique_ptr<args::Arg>> vector);
+		std::vector<args::Arg*> vector);
 } /* namespace args_parse */
