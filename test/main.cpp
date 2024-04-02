@@ -10,7 +10,7 @@
 #include "args_parse/parser.hpp"
 
 args_parse::Parser getParser(const int argc, const char** argv);
-std::vector<args::Arg*> getTestArgs();
+std::vector< std::unique_ptr<args::Arg>> getTestArgs();
 
 TEST_CASE("Validation", "[dummy][section]")
 {
@@ -96,13 +96,17 @@ TEST_CASE("Parser negative", "[dummy][section][throws]")
 args_parse::Parser getParser(const int argc, const char** argv)
 {
     args_parse::Parser parser(argc, argv);
-    auto args = getTestArgs();
-    parser.addArgs(args);
+    auto args = move(getTestArgs());
+
+    for(auto& arg : args)
+    {
+        parser.addArg(move(arg));
+    }
 
     return parser;
 }
 
-std::vector<args::Arg*> getTestArgs()
+std::vector<std::unique_ptr<args::Arg>> getTestArgs()
 {
 	args::EmptyArg help('h', "help",
 	                    "It's help operation",
@@ -132,13 +136,12 @@ std::vector<args::Arg*> getTestArgs()
 		                              std::cout << value << std::endl;
 	                              });
 
-    std::vector<args::Arg*> args;
+    std::vector< std::unique_ptr<args::Arg>> args;
 
-    args.push_back(&help);
-    args.push_back(&help);
-    args.push_back(&output);
-    args.push_back(&giveMyAge);
-    args.push_back(&isMyProgramCool);
+    args.push_back(std::make_unique<args::EmptyArg>(help));
+    args.push_back(std::make_unique<args::StringArg>(output));
+    args.push_back(std::make_unique<args::IntArg>(giveMyAge));
+    args.push_back(std::make_unique<args::BoolArg>(isMyProgramCool));
 
     return args;
 }

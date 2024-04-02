@@ -4,7 +4,7 @@
 
 namespace args_parse
 {
-	const int STARTING_STRING_POSITION = 0;
+	const int StartingStringPosition = 0;
 
 	Parser::Parser(int argc, const char** argv)
 	{
@@ -16,13 +16,13 @@ namespace args_parse
 	{
 		size_t pos = str.find("--");
 
-		if (pos != std::string::npos && pos == STARTING_STRING_POSITION) {
+		if (pos != std::string::npos && pos == StartingStringPosition) {
 			return OperatorType::LONG;
 		}
 
 		pos = str.find("-");
 
-		if (pos != std::string::npos && pos == STARTING_STRING_POSITION) {
+		if (pos != std::string::npos && pos == StartingStringPosition) {
 			return OperatorType::SHORT;
 		}
 
@@ -62,7 +62,7 @@ namespace args_parse
 	{
 		const int LENGHT_OF_CHAR = 1;
 		int index = 0;
-		for (auto arg : this->args) {
+		for (auto& arg : this->args) {
 			char shortArg = arg->getShortArg();
 			const size_t pos = item.find(shortArg);
 			if (pos == 0) {
@@ -83,7 +83,7 @@ namespace args_parse
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	std::tuple<args::Arg*, std::string> Parser::getOperator(std::string item, OperatorType operatorType) const
+	int Parser::getOperator(std::string item, OperatorType operatorType) const
 	{
 		std::string value = "";
 		size_t equalSignPosition = item.find('=');
@@ -96,30 +96,31 @@ namespace args_parse
 		if (operatorType == OperatorType::LONG)
 		{
 			const int LENGTH_OF_TWO_DASH = 2;
-			item = item.erase(STARTING_STRING_POSITION, LENGTH_OF_TWO_DASH);
+			item = item.erase(StartingStringPosition, LENGTH_OF_TWO_DASH);
 
 			auto index = findLongOperator(item, value);
 
-			std::tuple<args::Arg*, std::string> tuple = make_tuple(args[index], value);
+			this->args[index]->setValue(value);
+
 			
-			return tuple;
+			return index;
 		}
 
 		if (operatorType == OperatorType::SHORT)
 		{
 			const int LENGTH_OF_ONE_DASH = 1;
-			item.erase(STARTING_STRING_POSITION, LENGTH_OF_ONE_DASH);
+			item.erase(StartingStringPosition, LENGTH_OF_ONE_DASH);
 
 			auto index = findShortOperator(item, value);
-			std::tuple<args::Arg*, std::string> tuple = make_tuple(args[index], value);
+			this->args[index]->setValue(value);
 
-			return tuple;
+			return index;
 		}
 
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	bool Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, args::Arg* foundOperator)
+	bool Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, std::unique_ptr<args::Arg> foundOperator)
 	{
 		bool nextArgIsNoteOperator = false;
 
@@ -128,7 +129,6 @@ namespace args_parse
 			nextArgIsNoteOperator = isOperator(nextElement) == OperatorType::NOPE;
 		}
 
-		//const bool argAllowsUseValue = foundOperator.getAcceptingTheValue() != args::Status::FORBIDDEN;
 		const bool argAllowsUseValue = foundOperator->getHasAValue() == true;
 
 		if (nextArgIsNoteOperator && !argAllowsUseValue)
@@ -143,7 +143,7 @@ namespace args_parse
 
 	bool Parser::parse()
 	{
-		std::vector<args::Arg*> vectorProcesses;
+		std::vector<std::unique_ptr<args::Arg>> vectorProcesses;
 
 		for (int i = 1; i < argc; ++i)
 		{
@@ -152,24 +152,26 @@ namespace args_parse
 
 			auto operatorType = isOperator(strItem);
 
-			auto [foundOperator, value] = getOperator(strItem, operatorType);
+			int index = getOperator(strItem, operatorType);
+
+			auto foundOperator = std::move(this->args[index]);
 
 			auto nextElement = argv[i + 1];
-			bool isNextElementValue = checkIfTheFollowingArgvIsAValue(nextElement, foundOperator);
+			bool isNextElementValue = checkIfTheFollowingArgvIsAValue(nextElement, std::move(foundOperator));
 
 			if (isNextElementValue)
 			{
-				if (value != "")
+				if (foundOperator->getValue() != "")
 				{
 					throw std::invalid_argument("Multiple value transmission");
 				}
 
-				value = nextElement;
+				foundOperator->setValue(nextElement);
 
 				i++;
 			}
 
-			if (typeid(foundOperator).name() == "ValueType" && value == "")
+			if (foundOperator->getHasAValue() == true && foundOperator->getValue() == "")
 			{
 				throw std::invalid_argument("Operator has to have a value");
 			}
@@ -179,26 +181,24 @@ namespace args_parse
 				throw std::invalid_argument("Invalid value");
 			}*/
 
-			foundOperator->setValue(value);
-
 			vectorProcesses.push_back(foundOperator);
 		}
 
-		invokeProcesses(vectorProcesses);
+		invokeProcesses(std::move(vectorProcesses));
 
 		return true;
 	}
 
-	void Parser::addArg(args::Arg* arg)
+	void Parser::addArg(std::unique_ptr<args::Arg> arg)
 	{
-		args.push_back(arg);
+		args.push_back(std::move(arg));
 	}
 
-	void Parser::addArgs(std::vector<args::Arg*> args)
+	void Parser::addArgs(std::vector<std::unique_ptr<args::Arg>> args)
 	{
-		for(auto arg : args)
+		for(auto& arg : args)
 		{
-			addArg(arg);
+			addArg(move(arg));
 		}
 	}
 }

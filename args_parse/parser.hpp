@@ -21,7 +21,7 @@ namespace args_parse
 	private:
 		int argc = 0;
 		const char** argv;
-		std::vector<args::Arg*> args;
+		std::vector<std::unique_ptr<args::Arg>> args;
 		/**
 		 * \brief Является ли строка оператором.
 		 * \param str - входная строка.
@@ -49,14 +49,14 @@ namespace args_parse
 		 * \return Кортеж оператора и значения.
 		 * \attention Если value = "", то значение у оператора нет.
 		 */
-		std::tuple<args::Arg*, std::string> getOperator(std::string item, OperatorType operatorType) const;
-		static bool checkIfTheFollowingArgvIsAValue(const char* nextElement, args::Arg* foundOperator);
+		int getOperator(std::string item, OperatorType operatorType) const;
+		static bool checkIfTheFollowingArgvIsAValue(const char* nextElement, std::unique_ptr<args::Arg> foundOperator);
 	public:
 		Parser(int argc,
 			const char** argv);
 
 		bool parse();
-		void addArg(args::Arg* arg);
-		void addArgs(std::vector<args::Arg*> args);
+		void addArg(std::unique_ptr<args::Arg> arg);
+		void addArgs(std::vector<std::unique_ptr<args::Arg>> args);
 	};
 }

@@ -3,9 +3,9 @@
 
 namespace args_parse
 {
-	void invokeProcesses(std::vector<args::Arg*> vector)
+	void invokeProcesses(std::vector<std::unique_ptr<args::Arg>> vector)
 	{
-		for (auto arg : vector)
+		for (auto& arg : vector)
 		{
 			std::string value = arg->getValue();
 
