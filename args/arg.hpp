@@ -28,7 +28,7 @@ namespace args
 
 		void setValue(std::string value)
 		{
-			value = value;
+			this->value = value;
 			//hasValue = true;
 		}
 

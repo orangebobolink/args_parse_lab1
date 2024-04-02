@@ -178,10 +178,10 @@ namespace args_parse
 				throw std::invalid_argument("Operator has to have a value");
 			}
 
-			/*if(value != "" && validator->validateValue(value))
+			if(foundOperator->getValue() != "" && !foundOperator->validateValue(foundOperator->getValue()))
 			{
 				throw std::invalid_argument("Invalid value");
-			}*/
+			}
 
 			vectorProcesses.push_back(foundOperator);
 		}

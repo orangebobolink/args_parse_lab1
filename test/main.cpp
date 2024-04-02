@@ -90,6 +90,17 @@ TEST_CASE("Parser negative", "[dummy][section][throws]")
 
                 parser.parse();
             }());
+
+        REQUIRE_THROWS(
+            []
+            {
+                const char* argv[] = { " ", "--giveMyAge", "hello" };
+                const int argc = 3;
+
+                auto parser = getParser(argc, argv);
+
+                parser.parse();
+            }());
     }
 }
 
