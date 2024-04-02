@@ -1,8 +1,6 @@
 ﻿#include <iostream>
 #include "parser.hpp"
 #include "vectorService.hpp"
-#include <args/emptyArg.hpp>
-#include <args/valueArg.hpp>
 
 namespace args_parse
 {
@@ -12,10 +10,6 @@ namespace args_parse
 	{
 		this->argc = argc;
 		this->argv = argv;
-	}
-	Parser::~Parser()
-	{
-		this->args.clear();
 	}
 
 	OperatorType Parser::isOperator(const std::string str)
@@ -35,9 +29,10 @@ namespace args_parse
 		return OperatorType::NOPE;
 	}
 
-	args::Arg Parser::findLongOperator(std::string item, std::string& value) const
+	int Parser::findLongOperator(std::string item, std::string& value) const
 	{
-		for (auto arg : this->args) {
+		int index = 0;
+		for (auto& arg : this->args) {
 			auto longArg = arg->getLongArg();
 			const size_t equalSignPosition = item.find(longArg);
 
@@ -49,23 +44,27 @@ namespace args_parse
 
 				value = item.substr(longArg.length());
 
-				return arg;
+				return index;
 			}
 
 			if (longArg == item)
 			{
-				return arg;
+				return index;
 			}
+
+			index++;
 		}
 
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	args::Arg Parser::findShortOperator(std::string item, std::string& value) const
+	int Parser::findShortOperator(std::string item, std::string& value) const
 	{
 		const int LENGHT_OF_CHAR = 1;
-		for (auto& arg : this->args) {
-			const size_t pos = item.find(arg->getShortArg());
+		int index = 0;
+		for (auto arg : this->args) {
+			char shortArg = arg->getShortArg();
+			const size_t pos = item.find(shortArg);
 			if (pos == 0) {
 				if (pos + LENGHT_OF_CHAR < item.length()) {
 					if (value != "")
@@ -76,14 +75,15 @@ namespace args_parse
 					value = item.substr(pos + LENGHT_OF_CHAR);
 				}
 
-				return arg;
+				return index;
 			}
+			index++;
 		}
 
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	std::tuple<args::Arg, std::string> Parser::getOperator(std::string item, OperatorType operatorType) const
+	std::tuple<args::Arg*, std::string> Parser::getOperator(std::string item, OperatorType operatorType) const
 	{
 		std::string value = "";
 		size_t equalSignPosition = item.find('=');
@@ -98,10 +98,10 @@ namespace args_parse
 			const int LENGTH_OF_TWO_DASH = 2;
 			item = item.erase(STARTING_STRING_POSITION, LENGTH_OF_TWO_DASH);
 
-			auto arg = findLongOperator(item, value);
+			auto index = findLongOperator(item, value);
 
-			std::tuple<args::Arg, std::string> tuple = make_tuple(arg, value);
-
+			std::tuple<args::Arg*, std::string> tuple = make_tuple(args[index], value);
+			
 			return tuple;
 		}
 
@@ -110,8 +110,8 @@ namespace args_parse
 			const int LENGTH_OF_ONE_DASH = 1;
 			item.erase(STARTING_STRING_POSITION, LENGTH_OF_ONE_DASH);
 
-			auto arg = findShortOperator(item, value);
-			std::tuple<args::Arg, std::string> tuple = make_tuple(arg, value);
+			auto index = findShortOperator(item, value);
+			std::tuple<args::Arg*, std::string> tuple = make_tuple(args[index], value);
 
 			return tuple;
 		}
@@ -119,7 +119,7 @@ namespace args_parse
 		throw std::invalid_argument("operator is invalid");
 	}
 
-	bool Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, args::Arg foundOperator)
+	bool Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, args::Arg* foundOperator)
 	{
 		bool nextArgIsNoteOperator = false;
 
@@ -129,7 +129,7 @@ namespace args_parse
 		}
 
 		//const bool argAllowsUseValue = foundOperator.getAcceptingTheValue() != args::Status::FORBIDDEN;
-		const bool argAllowsUseValue = typeid(foundOperator).name() == "ValueType";
+		const bool argAllowsUseValue = foundOperator->getHasAValue() == true;
 
 		if (nextArgIsNoteOperator && !argAllowsUseValue)
 		{
@@ -143,7 +143,7 @@ namespace args_parse
 
 	bool Parser::parse()
 	{
-		std::vector<std::tuple<args::Arg, std::string>> vectorProcesses;
+		std::vector<args::Arg*> vectorProcesses;
 
 		for (int i = 1; i < argc; ++i)
 		{
@@ -179,8 +179,9 @@ namespace args_parse
 				throw std::invalid_argument("Invalid value");
 			}*/
 
-			std::tuple<args::Arg, std::string> tuple = make_tuple(foundOperator, value);
-			vectorProcesses.push_back(tuple);
+			foundOperator->setValue(value);
+
+			vectorProcesses.push_back(foundOperator);
 		}
 
 		invokeProcesses(vectorProcesses);
@@ -188,13 +189,16 @@ namespace args_parse
 		return true;
 	}
 
-	void Parser::addArg(std::unique_ptr<args::Arg> arg)
+	void Parser::addArg(args::Arg* arg)
 	{
-		this->args.push_back(std::make_unique<args::Arg>(arg));
+		args.push_back(arg);
 	}
 
-	void Parser::addArgs(std::vector<std::unique_ptr<args::Arg>> args)
+	void Parser::addArgs(std::vector<args::Arg*> args)
 	{
-		this->args = args;
+		for(auto arg : args)
+		{
+			addArg(arg);
+		}
 	}
 }

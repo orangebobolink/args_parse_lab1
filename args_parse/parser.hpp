@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <vector> 
 #include <tuple>
-
 #include "args/arg.hpp"
 
 namespace args_parse
@@ -22,27 +21,27 @@ namespace args_parse
 	private:
 		int argc = 0;
 		const char** argv;
-		std::vector< std::unique_ptr<args::Arg>> args;
+		std::vector<args::Arg*> args;
 		/**
 		 * \brief Является ли строка оператором.
 		 * \param str - входная строка.
 		 * \return Тип оператора.
 		 */
-		OperatorType isOperator(const std::string str);
+		static OperatorType isOperator(const std::string str);
 		/**
 		 * \brief Поиск длинного оператора по всем известным парсеру операторов.
 		 * \param item Предпологаемый оператор.
 		 * \param value Возможное значение оператора.
 		 * \return Найденный оператор.
 		 */
-		args::Arg findLongOperator(std::string item, std::string& value) const;
+		int findLongOperator(std::string item, std::string& value) const;
 		/**
 		 * \brief Поиск короткого оператора по всем известным парсеру операторов.
 		 * \param item Предпологаемый оператор.
 		 * \param value Возможное значение оператора.
 		 * \return Найденный оператор.
 		 */
-		args::Arg findShortOperator(std::string item, std::string& value) const;
+		int findShortOperator(std::string item, std::string& value) const;
 		/**
 		 * \brief Получение оператора.
 		* \param item Предпологаемый оператор.
@@ -50,15 +49,14 @@ namespace args_parse
 		 * \return Кортеж оператора и значения.
 		 * \attention Если value = "", то значение у оператора нет.
 		 */
-		std::tuple<args::Arg, std::string> getOperator(std::string item, OperatorType operatorType) const;
-		bool checkIfTheFollowingArgvIsAValue(const char* nextElement, args::Arg foundOperator);
+		std::tuple<args::Arg*, std::string> getOperator(std::string item, OperatorType operatorType) const;
+		static bool checkIfTheFollowingArgvIsAValue(const char* nextElement, args::Arg* foundOperator);
 	public:
-		explicit Parser(int argc,
+		Parser(int argc,
 			const char** argv);
-		~Parser();
 
 		bool parse();
-		void addArg(std::unique_ptr<args::Arg> arg);
-		void addArgs(std::vector< std::unique_ptr<args::Arg>> args);
+		void addArg(args::Arg* arg);
+		void addArgs(std::vector<args::Arg*> args);
 	};
 }

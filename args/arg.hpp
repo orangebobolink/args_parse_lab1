@@ -26,6 +26,17 @@ namespace args
 			return hasValue;
 		}
 
+		void setValue(std::string value)
+		{
+			value = value;
+			hasValue = true;
+		}
+
+		const std::string getValue()
+		{
+			return value;
+		}
+
 		Arg(char shortArg,
 			std::string longArg,
 			std::string description,

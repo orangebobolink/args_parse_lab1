@@ -2,6 +2,7 @@
 #include <args/arg.hpp>
 #include <vector>
 #include <tuple>
+#include <memory>
 
 namespace args_parse
 {
@@ -15,5 +16,5 @@ namespace args_parse
     ///
     void invokeProcesses(
         /// Вектор процессов.
-        std::vector< std::tuple<args::Arg, std::string>> vector);
+		std::vector<args::Arg*> vector);
 } /* namespace args_parse */

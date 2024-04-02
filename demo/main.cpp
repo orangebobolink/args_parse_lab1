@@ -5,11 +5,12 @@
 #include <args/stringArg.hpp>
 #include <args/emptyArg.hpp>
 #include <vector>
-#include <args_parse/parser.hpp>
+
+#include "args_parse/parser.hpp"
 
 using namespace args;
 
-std::vector<std::unique_ptr<Arg>> getTestArgs();
+std::vector<Arg*> getTestArgs();
 
 int main(int argc, const char** argv)
 {
@@ -28,7 +29,7 @@ int main(int argc, const char** argv)
 	}
 }
 
-std::vector< std::unique_ptr<Arg>> getTestArgs()
+std::vector<Arg*> getTestArgs()
 {
 	EmptyArg help('h', "help",
 		"It's help operation",
@@ -58,13 +59,13 @@ std::vector< std::unique_ptr<Arg>> getTestArgs()
 			std::cout << value << std::endl;
 		});
 
-	std::vector<std::unique_ptr<Arg>> args;
+	std::vector<Arg*> args;
 
-	args.emplace_back(std::make_unique<EmptyArg>(help));
-	args.emplace_back(std::make_unique<EmptyArg>(help));
-	args.push_back(std::make_unique<StringArg>(output));
-	args.push_back(std::make_unique<IntArg>(giveMyAge));
-	args.push_back(std::make_unique<BoolArg>(isMyProgramCool));
+	args.push_back(&help);
+	args.push_back(&help);
+	args.push_back(&output);
+	args.push_back(&giveMyAge);
+	args.push_back(&isMyProgramCool);
 
 	return args;
 }

@@ -1,21 +1,21 @@
 #include "vectorService.hpp"
+#include <memory>
 
 namespace args_parse
 {
-	void invokeProcesses(std::vector<std::tuple<args::Arg, std::string>> vector)
+	void invokeProcesses(std::vector<args::Arg*> vector)
 	{
-		for (std::tuple<args::Arg, std::string> tuple : vector)
+		for (auto arg : vector)
 		{
-			args::Arg arg = std::get<args::Arg>(tuple);
-			std::string value = std::get<std::string>(tuple);
+			std::string value = arg->getValue();
 
 			if (value == "")
 			{
-				arg.process();
+				arg->process();
 			}
 			else
 			{
-				arg.processWithValue(value);
+				arg->processWithValue(value);
 			}
 		}
 	}
