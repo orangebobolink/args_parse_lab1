@@ -191,7 +191,7 @@ namespace args_parse
 
 	void Parser::addArg(std::unique_ptr<args::Arg> arg)
 	{
-		args.push_back(std::move(arg));
+		this->args.push_back(std::move(arg));
 	}
 
 	void Parser::addArgs(std::vector<std::unique_ptr<args::Arg>> args)
