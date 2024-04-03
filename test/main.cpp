@@ -1,6 +1,5 @@
-#include <catch2/catch_all.hpp>
-
 #include "testUtils.hpp"
+#include <catch2/catch_all.hpp>
 #include <iostream>
 
 types::Result<bool> runParce(int argc, const char* argv[])
@@ -125,6 +124,7 @@ TEST_CASE("Parser negative", "[dummy][section][throws]")
 		{ " ", "-h", "-d" },
 		{ " ", "--help", "-s" },
 		{ " ", "--giveMyAge", "hello" }
+		{ " ", "-hs" }
 	};
 	auto testCases = std::move(test_utils::createTestCases(testCasesStrings));
 

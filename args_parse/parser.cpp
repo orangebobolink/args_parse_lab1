@@ -18,74 +18,78 @@ namespace args_parse
 		int index = 0;
 		for (auto& arg : this->args) {
 			auto longArg = arg->getLongArg();
-			const size_t equalSignPosition = item.find(longArg);
-
-			/// вынести
-			if (equalSignPosition != std::string::npos && equalSignPosition == 0 && longArg.length() < item.length()) {
-				if (value != "")
-				{
-					return { "Multiple value transmission" };
-				}
-
-				value = item.substr(longArg.length());
-
-				return { true, index };
-			}
-
-			const size_t equalSignPositions = longArg.find(item);
-
-			if (equalSignPositions != std::string::npos && equalSignPositions == 0
-				&& longArg.length() > item.length()
-				&& item.length() > 0) {
-
-				return { true, index };
-			}
 
 			if (longArg == item)
 			{
 				return { true, index };
 			}
 
+			/// Item состоит из аргумента (в полной форме) и его значения
+			bool theItemCheckConsistsOfAnArgumentAndAValue =
+				ParserService::checkItemConsistsOfAnArgumentAndAValue(item, longArg);
+
+			if (theItemCheckConsistsOfAnArgumentAndAValue)
+			{
+				return ParserService::itemConsistsOfAnArgumentAndAValue(value, item, longArg, index);
+			}
+
+			/// Item состоит из аргумента написанного в неполной форме
+			bool isArgumentWrittenInAnIncompleteForm =
+				ParserService::checkArgumentIsWrittenInAnIncompleteForm(item, longArg);
+
+			if (isArgumentWrittenInAnIncompleteForm)
+			{
+				return { true, index };
+			}
+
 			index++;
 		}
+
 		return { "operator is invalid" };
 	}
 
 	types::Result<bool> Parser::findShortOperator(std::string item, std::string& value, std::vector<int>& indexVector) const
 	{
-		const int LENGHT_OF_CHAR = 1;
+		const int LenghtOfChar = 1;
 		int index = 0;
 		for (auto& arg : this->args) {
 			char shortArg = arg->getShortArg();
 			const size_t pos = item.find(shortArg);
-			if (pos == 0) {
-				if (pos + LENGHT_OF_CHAR < item.length()) {
-					item = item.substr(pos + LENGHT_OF_CHAR);
 
-					if (this->args[index]->getHasAValue())
-					{
-						if (item != "")
-						{
-							value = item;
-
-							indexVector.push_back(index);
-							return { true, true };
-						}
-
-						return { "Multiple value transmission" };
-					}
-
-					auto result = findShortOperator(item, value, indexVector);
-
-					if (!result.success) return { result.error };
-				}
-
-				indexVector.push_back(index);
-
-				return { true,true };
+			/// Не аргумент
+			if (pos != 0)
+			{
+				index++;
+				continue;
 			}
 
-			index++;
+			/// Мы нашли аргумент, смотрим есть ли в item что-то ещё
+			if (pos + LenghtOfChar < item.length()) {
+				item = item.substr(pos + LenghtOfChar);
+
+				/// Если аргумент принимает значение, то item - значение
+				if (this->args[index]->getHasAValue())
+				{
+					if (item != "")
+					{
+						value = item;
+
+						indexVector.push_back(index);
+						return { true, true };
+					}
+
+					return { "Multiple value transmission" };
+				}
+
+				/// Возможно это другой аргумент 
+				auto result = findShortOperator(item, value, indexVector);
+
+				if (!result.success) return { result.error };
+			}
+
+			indexVector.push_back(index);
+
+			return { true,true };
 		}
 
 		return { "operator is invalid" };
@@ -159,11 +163,11 @@ namespace args_parse
 			auto indexVector = getOperatorResult.data;
 
 			for (size_t i = 1; i < indexVector.size(); ++i) {
-				auto foundOperator = this->args[indexVector[i]].get();
+				args::Arg* foundOperator = this->args[indexVector[i]].get();
 				vectorProcesses.push_back(foundOperator);
 			}
 
-			auto foundOperator = this->args[indexVector[0]].get();
+			args::Arg* foundOperator = this->args[indexVector[0]].get();
 
 			auto nextElement = argv[i + 1];
 			bool isNextElementValue = false;

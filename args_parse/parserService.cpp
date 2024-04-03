@@ -35,4 +35,39 @@ namespace args_parse
 
 		return { true, isNextElementValue };
 	}
+	types::Result<int> ParserService::itemConsistsOfAnArgumentAndAValue(std::string& value,
+		std::string& item,
+		std::string& longArg,
+		int index
+	)
+	{
+		if (value != "")
+		{
+			return { "Multiple value transmission" };
+		}
+
+		value = item.substr(longArg.length());
+
+		return { true, index };
+	}
+	bool ParserService::checkItemConsistsOfAnArgumentAndAValue(std::string& item, std::string& longArg)
+	{
+		const size_t equalSignPosition = item.find(longArg);
+		bool theItemCheckConsistsOfAnArgumentAndAValue =
+			equalSignPosition != std::string::npos
+			&& equalSignPosition == 0
+			&& longArg.length() < item.length();
+
+		return theItemCheckConsistsOfAnArgumentAndAValue;
+	}
+	bool ParserService::checkArgumentIsWrittenInAnIncompleteForm(std::string& item, std::string& longArg)
+	{
+		const size_t equalSignPosition = longArg.find(item);
+		bool isArgumentWrittenInAnIncompleteForm =
+			equalSignPosition != std::string::npos && equalSignPosition == 0
+			&& longArg.length() > item.length()
+			&& item.length() > 0;
+
+		return isArgumentWrittenInAnIncompleteForm;
+	}
 }
