@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include "parser.hpp"
 #include "vectorService.hpp"
+#include "parserService.hpp"
 
 namespace args_parse
 {
@@ -10,23 +11,6 @@ namespace args_parse
 	{
 		this->argc = argc;
 		this->argv = argv;
-	}
-
-	OperatorType Parser::isOperator(const std::string str)
-	{
-		size_t pos = str.find("--");
-
-		if (pos != std::string::npos && pos == StartingStringPosition) {
-			return OperatorType::LONG;
-		}
-
-		pos = str.find("-");
-
-		if (pos != std::string::npos && pos == StartingStringPosition) {
-			return OperatorType::SHORT;
-		}
-
-		return OperatorType::NOPE;
 	}
 
 	types::Result<int> Parser::findLongOperator(std::string item, std::string& value) const
@@ -76,11 +60,6 @@ namespace args_parse
 			const size_t pos = item.find(shortArg);
 			if (pos == 0) {
 				if (pos + LENGHT_OF_CHAR < item.length()) {
-					//if (value != "")
-					//{
-					//	throw std::invalid_argument("Multiple value transmission");
-					//}
-
 					item = item.substr(pos + LENGHT_OF_CHAR);
 
 					if (this->args[index]->getHasAValue())
@@ -88,7 +67,6 @@ namespace args_parse
 						if (item != "")
 						{
 							value = item;
-							//this->args[index]->setValue(item);
 
 							indexVector.push_back(index);
 							return { true, true };
@@ -100,11 +78,10 @@ namespace args_parse
 					auto result = findShortOperator(item, value, indexVector);
 
 					if (!result.success) return { result.error };
-
-					//value = item.substr(pos + LENGHT_OF_CHAR);
 				}
 
 				indexVector.push_back(index);
+
 				return { true,true };
 			}
 
@@ -164,25 +141,6 @@ namespace args_parse
 		return { "operator is invalid" };
 	}
 
-	types::Result<bool> Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, const bool argAllowsUseValue)
-	{
-		bool nextArgIsNoteOperator = false;
-
-		if (nextElement != NULL)
-		{
-			nextArgIsNoteOperator = isOperator(nextElement) == OperatorType::NOPE;
-		}
-
-		if (nextArgIsNoteOperator && !argAllowsUseValue)
-		{
-			return { "arg doesn't allow use value" };
-		}
-
-		const bool isNextElementValue = nextArgIsNoteOperator && argAllowsUseValue;
-
-		return { true, isNextElementValue };
-	}
-
 	types::Result<bool> Parser::parse()
 	{
 		std::vector<args::Arg*> vectorProcesses;
@@ -192,7 +150,7 @@ namespace args_parse
 			auto item = argv[i];
 			std::string strItem(item);
 
-			auto operatorType = isOperator(strItem);
+			auto operatorType = ParserService::isOperator(strItem);
 
 			auto getOperatorResult = getOperator(strItem, operatorType);
 
@@ -211,7 +169,8 @@ namespace args_parse
 			bool isNextElementValue = false;
 			if (i + 1 < argc)
 			{
-				auto result = checkIfTheFollowingArgvIsAValue(nextElement, foundOperator->getHasAValue());
+				auto result = ParserService::checkIfTheFollowingArgvIsAValue(nextElement,
+					foundOperator->getHasAValue());
 
 				if (!result.success) return { result.error };
 
