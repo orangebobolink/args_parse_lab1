@@ -49,4 +49,22 @@ namespace args
 	{
 		return false;
 	}
+
+	void Arg::incrementUsageCount() {
+		this->usageCount++;
+	}
+
+	void Arg::setUsageCount(int count) {
+		this->usageCount = count;
+	}
+
+	int Arg::getUsageCount() const
+	{
+		return this->usageCount;
+	}
+
+	bool Arg::getAllowMultyValues() const
+	{
+		return this->allowMultyValues;
+	}
 }

@@ -32,6 +32,7 @@ find_package(Catch2 CONFIG REQUIRED)
 # Include sub-projects.
 add_subdirectory ("types")
 add_subdirectory ("args")
+add_subdirectory ("multy_args")
 add_subdirectory ("args_parse")
 add_subdirectory ("demo")
 

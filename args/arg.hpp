@@ -20,6 +20,8 @@ namespace args
 		types::Result<bool>(*processWithValueFunction)(std::string value);
 		bool hasValue = false;
 		std::string value = "";
+		int usageCount = 0;
+		bool allowMultyValues = false;
 
 	public:
 		const bool getHasAValue()
@@ -64,7 +66,11 @@ namespace args
 		std::string getLongArg() const;
 		bool virtual validateValue(std::string value);
 
-		types::Result<bool> process();
-		types::Result<bool> processWithValue(std::string value);
+		virtual types::Result<bool> process();
+		virtual types::Result<bool> processWithValue(std::string value);
+		void incrementUsageCount();
+		void setUsageCount(int count);
+		int getUsageCount() const;
+		bool getAllowMultyValues() const;
 	};
 }

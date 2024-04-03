@@ -1,4 +1,5 @@
 #include "testUtils.hpp"
+#include <multy_args/multyEmptyArg.hpp>
 
 namespace test_utils
 {
@@ -45,7 +46,7 @@ namespace test_utils
 				return types::Result(true, true);
 			});
 
-		args::EmptyArg version('v', "version",
+		multy_args::MultyEmptyArg version('v', "version",
 			"It's version operation",
 			[]()
 			{

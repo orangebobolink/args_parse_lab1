@@ -117,6 +117,24 @@ TEST_CASE("Parser positive", "[dummy][section]")
 			REQUIRE(assert);
 		}
 	}
+
+	SECTION("Multy args")
+	{
+		std::cout << "5 SECTION" << std::endl;
+
+		std::vector<std::vector<const char*>> testCasesStrings =
+		{
+			{ " ", "-v", "-v", "-v"},
+			{ " ", "-v", "-v", "-h", "-v"}
+		};
+		auto testCases = std::move(test_utils::createTestCases(testCasesStrings));
+
+		for (auto& testCase : testCases)
+		{
+			bool assert = runParce(testCase.first, testCase.second.get()).success;
+			REQUIRE(assert);
+		}
+	}
 }
 
 TEST_CASE("Parser negative", "[dummy][section][throws]")
@@ -129,7 +147,8 @@ TEST_CASE("Parser negative", "[dummy][section][throws]")
 		{ " ", "--help", "-s" },
 		{ " ", "--giveMyAge", "hello" },
 		{ " ", "--giveMyAge"},
-		{ " ", "-hs" }
+		{ " ", "-hs" },
+		{" ", "-h", "--help"}
 	};
 	auto testCases = std::move(test_utils::createTestCases(testCasesStrings));
 

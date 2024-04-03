@@ -16,5 +16,6 @@ namespace args
 		}
 
 		bool validateValue(std::string value) override;
+		types::Result<bool> process() override;
 	};
 }
