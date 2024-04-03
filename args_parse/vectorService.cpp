@@ -8,10 +8,9 @@ namespace args_parse
 	{
 		std::unordered_map<args::Arg*, int> typeCount;
 
-		for (auto process : vector) {
-			//std::string type = process->getLongArg();
-			process->incrementUsageCount();
-			typeCount[process]++;
+		for (auto& arg : vector) {
+			arg->incrementUsageCount();
+			typeCount[arg]++;
 		}
 
 		for (auto& arg : typeCount)
