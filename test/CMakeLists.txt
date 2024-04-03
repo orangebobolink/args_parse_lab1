@@ -10,9 +10,9 @@ add_executable(_unit_test_args_parse main.cpp testUtils.hpp "testUtils.cpp")
 target_link_libraries(_unit_test_args_parse
     PRIVATE
         # Библиотека args_parse должна быть прилинкована к этому исполнимому файлу.
+        types
         args_parse
         args
-        types
         # Библиотека Catch2 должна быть прилинкована к этому исполнимому файлу.
         Catch2::Catch2WithMain
 )
