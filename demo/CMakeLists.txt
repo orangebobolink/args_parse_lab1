@@ -8,5 +8,5 @@ project(args_parse_demo_app LANGUAGES CXX)
 add_executable(args_parse_demo main.cpp "main.cpp")
 
 # Библиотека args_parse должна быть прилинкована к этому исполнимому файлу.
-target_link_libraries(args_parse_demo PRIVATE args_parse args)
+target_link_libraries(args_parse_demo PRIVATE args_parse args types)
 

@@ -12,6 +12,7 @@ target_link_libraries(_unit_test_args_parse
         # Библиотека args_parse должна быть прилинкована к этому исполнимому файлу.
         args_parse
         args
+        types
         # Библиотека Catch2 должна быть прилинкована к этому исполнимому файлу.
         Catch2::Catch2WithMain
 )

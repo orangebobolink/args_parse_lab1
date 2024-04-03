@@ -54,7 +54,7 @@ namespace args
 			std::string longArg,
 			std::string description,
 			void (*processWithValueFunction)(std::string value))
-			: Arg(shortArg, longArg, description, []() {}, [](std::string value) {})
+			: Arg(shortArg, longArg, description, []() {}, processWithValueFunction)
 		{}
 
 		std::string getDescriptiong() const;

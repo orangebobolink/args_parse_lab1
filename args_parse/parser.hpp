@@ -41,7 +41,7 @@ namespace args_parse
 		 * \param value Возможное значение оператора.
 		 * \return Найденный оператор.
 		 */
-		int findShortOperator(std::string item, std::string& value) const;
+		void findShortOperator(std::string item, std::string& value, std::vector<int>& indexVector) const;
 		/**
 		 * \brief Получение оператора.
 		* \param item Предпологаемый оператор.
@@ -49,7 +49,7 @@ namespace args_parse
 		 * \return Кортеж оператора и значения.
 		 * \attention Если value = "", то значение у оператора нет.
 		 */
-		int getOperator(std::string item, OperatorType operatorType) const;
+		std::vector<int> getOperator(std::string item, OperatorType operatorType) const;
 		bool checkIfTheFollowingArgvIsAValue(const char* nextElement, const bool argAllowsUseValue);
 	public:
 		Parser(int argc,

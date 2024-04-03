@@ -3,7 +3,6 @@
 
 namespace args
 {
-
 	Arg::Arg(char shortArg,
 		std::string longArg,
 		std::string description,
