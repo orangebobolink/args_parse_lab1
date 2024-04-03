@@ -22,6 +22,7 @@ namespace args
 		std::string value = "";
 		int usageCount = 0;
 		bool allowMultyValues = false;
+		int maxCount = 1;
 
 	public:
 		const bool getHasAValue()
