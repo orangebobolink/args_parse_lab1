@@ -70,4 +70,13 @@ namespace args_parse
 
 		return isArgumentWrittenInAnIncompleteForm;
 	}
+	void ParserService::checkTheItemCheckContainsAnEqualSign(std::string& item, std::string& value)
+	{
+		size_t equalSignPosition = item.find('=');
+
+		if (equalSignPosition != std::string::npos) {
+			value = item.substr(equalSignPosition + 1);
+			item = item.substr(0, equalSignPosition);
+		}
+	}
 }

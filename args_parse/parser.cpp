@@ -98,12 +98,7 @@ namespace args_parse
 	types::Result<std::vector<int>> Parser::getOperator(std::string item, OperatorType operatorType) const
 	{
 		std::string value = "";
-		size_t equalSignPosition = item.find('=');
-
-		if (equalSignPosition != std::string::npos) {
-			value = item.substr(equalSignPosition + 1);
-			item = item.substr(0, equalSignPosition);
-		}
+		ParserService::checkTheItemCheckContainsAnEqualSign(item, value);
 
 		std::vector<int> indexVector;
 
@@ -111,7 +106,6 @@ namespace args_parse
 		{
 			const int LENGTH_OF_TWO_DASH = 2;
 			item = item.erase(StartingStringPosition, LENGTH_OF_TWO_DASH);
-
 
 			auto result = findLongOperator(item, value);
 
@@ -129,7 +123,6 @@ namespace args_parse
 		{
 			const int LENGTH_OF_ONE_DASH = 1;
 			item.erase(StartingStringPosition, LENGTH_OF_ONE_DASH);
-
 
 			auto result = findShortOperator(item, value, indexVector);
 

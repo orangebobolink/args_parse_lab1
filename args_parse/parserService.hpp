@@ -33,5 +33,6 @@ namespace args_parse
 		static bool checkArgumentIsWrittenInAnIncompleteForm(std::string& item,
 			std::string& longArg
 		);
+		static void checkTheItemCheckContainsAnEqualSign(std::string& item, std::string& value);
 	};
 }

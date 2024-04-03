@@ -87,6 +87,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 		{
 			{" ", "-hoGlued"},
 			{" ", "-ho=Glued"},
+			{ " ", "-ho", "Glued"},
 			{" ", "-hv"}
 		};
 		auto testCases = std::move(test_utils::createTestCases(testCasesStrings));
@@ -100,6 +101,8 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 	SECTION("Passing parameters")
 	{
+		std::cout << "4 SECTION" << std::endl;
+
 		std::vector<std::vector<const char*>> testCasesStrings =
 		{
 			{ " ", "-h", "--output", "This is output" },
@@ -121,9 +124,11 @@ TEST_CASE("Parser negative", "[dummy][section][throws]")
 	std::vector<std::vector<const char*>> testCasesStrings =
 	{
 		{" ", "-d"},
+		{" ", "Value"},
 		{ " ", "-h", "-d" },
 		{ " ", "--help", "-s" },
-		{ " ", "--giveMyAge", "hello" }
+		{ " ", "--giveMyAge", "hello" },
+		{ " ", "--giveMyAge"},
 		{ " ", "-hs" }
 	};
 	auto testCases = std::move(test_utils::createTestCases(testCasesStrings));
