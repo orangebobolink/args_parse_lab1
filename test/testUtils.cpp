@@ -42,6 +42,7 @@ namespace test_utils
 			[]()
 			{
 				std::cout << "Help" << std::endl;
+				return types::Result(true, true);
 			});
 
 		args::EmptyArg version('v', "version",
@@ -49,6 +50,7 @@ namespace test_utils
 			[]()
 			{
 				std::cout << "Version" << std::endl;
+				return types::Result(true, true);
 			});
 
 		args::StringArg output('o', "output",
@@ -56,6 +58,7 @@ namespace test_utils
 			[](std::string value)
 			{
 				std::cout << value << std::endl;
+				return types::Result(true, true);
 			});
 
 		args::IntArg giveMyAge('g', "giveMyAge",
@@ -63,6 +66,7 @@ namespace test_utils
 			[](std::string value)
 			{
 				std::cout << value << std::endl;
+				return types::Result(true, true);
 			});
 
 		args::BoolArg isMyProgramCool('i', "isMyProgramCool",
@@ -70,6 +74,7 @@ namespace test_utils
 			[](std::string value)
 			{
 				std::cout << value << std::endl;
+				return types::Result(true, true);
 			});
 
 		std::vector< std::unique_ptr<args::Arg>> args;

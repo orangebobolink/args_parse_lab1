@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <string>
 #include <typeinfo>
+#include <types/result.hpp>
 
 namespace args
 {
@@ -14,9 +15,9 @@ namespace args
 		std::string longArg = "";
 		/// Может ли содержать value.
 		/// Логика без value.
-		void (*processFunction)();
+		types::Result<bool>(*processFunction)();
 		/// Логика с value.
-		void (*processWithValueFunction)(std::string value);
+		types::Result<bool>(*processWithValueFunction)(std::string value);
 		bool hasValue = false;
 		std::string value = "";
 
@@ -40,21 +41,21 @@ namespace args
 		Arg(char shortArg,
 			std::string longArg,
 			std::string description,
-			void (*processFunction)(),
-			void(*processWithValueFunction)(std::string value));
+			types::Result<bool>(*processFunction)(),
+			types::Result<bool>(*processWithValueFunction)(std::string value));
 
 		Arg(char shortArg,
 			std::string longArg,
 			std::string description,
-			void (*processFunction)())
-			: Arg(shortArg, longArg, description, processFunction, [](std::string value) {})
+			types::Result<bool>(*processFunction)())
+			: Arg(shortArg, longArg, description, processFunction, [](std::string value) {return types::Result(true, true); })
 		{}
 
 		Arg(char shortArg,
 			std::string longArg,
 			std::string description,
-			void (*processWithValueFunction)(std::string value))
-			: Arg(shortArg, longArg, description, []() {}, processWithValueFunction)
+			types::Result<bool>(*processWithValueFunction)(std::string value))
+			: Arg(shortArg, longArg, description, []() {return types::Result(true, true); }, processWithValueFunction)
 		{}
 
 		std::string getDescriptiong() const;
@@ -63,7 +64,7 @@ namespace args
 		std::string getLongArg() const;
 		bool virtual validateValue(std::string value);
 
-		void process();
-		void processWithValue(std::string value);
+		types::Result<bool> process();
+		types::Result<bool> processWithValue(std::string value);
 	};
 }

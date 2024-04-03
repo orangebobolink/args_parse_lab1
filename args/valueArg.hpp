@@ -9,7 +9,7 @@ namespace args
 		ValueArg(char shortArg,
 			std::string longArg,
 			std::string description,
-			void (*processWithValueFunction)(std::string value))
+			types::Result<bool>(*processWithValueFunction)(std::string value))
 			: Arg(shortArg, longArg, description, processWithValueFunction)
 		{
 			this->hasValue = true;

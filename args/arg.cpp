@@ -6,15 +6,10 @@ namespace args
 	Arg::Arg(char shortArg,
 		std::string longArg,
 		std::string description,
-		void(*processFunction)(),
-		void(*processWithValueFunction)(std::string value))
-	{
-		this->longArg = longArg;
-		this->shortArg = shortArg;
-		this->description = description;
-		this->processFunction = processFunction;
-		this->processWithValueFunction = processWithValueFunction;
-	}
+		types::Result<bool>(*processFunction)(),
+		types::Result<bool>(*processWithValueFunction)(std::string value))
+		: shortArg(shortArg), longArg(longArg), description(description),
+		processFunction(processFunction), processWithValueFunction(processWithValueFunction) {}
 
 	std::string Arg::getDescriptiong() const
 	{
@@ -36,19 +31,18 @@ namespace args
 		return this->longArg;
 	}
 
-	void Arg::process()
+	types::Result<bool> Arg::process()
 	{
-		this->processFunction();
+		return this->processFunction();
 	}
 
-	void Arg::processWithValue(std::string value)
+	types::Result<bool> Arg::processWithValue(std::string value)
 	{
-		/*if (this->acceptingTheValue == Status::FORBIDDEN)
-		{
-			throw std::invalid_argument("value is forbbiden");
-		}*/
+		if (!hasValue) {
+			return { "Argument does not expect a value." };
+		}
 
-		this->processWithValueFunction(value);
+		return this->processWithValueFunction(value);
 	}
 
 	bool Arg::validateValue(std::string value)

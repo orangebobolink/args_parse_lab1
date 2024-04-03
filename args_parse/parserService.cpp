@@ -1,8 +1,9 @@
 #include "parserService.hpp"
 #include <string>
+
 namespace args_parse
 {
-	OperatorType ParserService::isOperator(const std::string str)
+	OperatorType ParserService::isOperator(const std::string& str)
 	{
 		if (str.size() >= 2
 			&& str[0] == '-'

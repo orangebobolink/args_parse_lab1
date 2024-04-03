@@ -13,7 +13,7 @@ namespace args_parse
 		this->argv = argv;
 	}
 
-	types::Result<int> Parser::findLongOperator(std::string item, std::string& value) const
+	types::Result<int> Parser::findLongOperator(std::string& item, std::string& value) const
 	{
 		int index = 0;
 		for (auto& arg : this->args) {
@@ -48,7 +48,7 @@ namespace args_parse
 		return { "operator is invalid" };
 	}
 
-	types::Result<bool> Parser::findShortOperator(std::string item, std::string& value, std::vector<int>& indexVector) const
+	types::Result<bool> Parser::findShortOperator(std::string& item, std::string& value, std::vector<int>& indexVector) const
 	{
 		const int LenghtOfChar = 1;
 		int index = 0;
@@ -95,7 +95,7 @@ namespace args_parse
 		return { "operator is invalid" };
 	}
 
-	types::Result<std::vector<int>> Parser::getOperator(std::string item, OperatorType operatorType) const
+	types::Result<std::vector<int>> Parser::getOperator(std::string& item, OperatorType operatorType) const
 	{
 		std::string value = "";
 		ParserService::checkTheItemCheckContainsAnEqualSign(item, value);
@@ -200,9 +200,9 @@ namespace args_parse
 			vectorProcesses.push_back(foundOperator);
 		}
 
-		invokeProcesses(vectorProcesses);
+		auto result = invokeProcesses(vectorProcesses);
 
-		return { true, true };
+		return result;
 	}
 
 	void Parser::addArg(std::unique_ptr<args::Arg> arg)

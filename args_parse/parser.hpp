@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include <vector> 
 #include "args/arg.hpp"
 #include "parserService.hpp"
+#include <vector> 
 
 namespace args_parse
 {
@@ -17,14 +17,14 @@ namespace args_parse
 		 * \param value Возможное значение оператора.
 		 * \return Найденный оператор.
 		 */
-		types::Result<int> findLongOperator(std::string item, std::string& value) const;
+		types::Result<int> findLongOperator(std::string& item, std::string& value) const;
 		/**
 		 * \brief Поиск короткого оператора по всем известным парсеру операторов.
 		 * \param item Предпологаемый оператор.
 		 * \param value Возможное значение оператора.
 		 * \return Найденный оператор.
 		 */
-		types::Result<bool> findShortOperator(std::string item, std::string& value, std::vector<int>& indexVector) const;
+		types::Result<bool> findShortOperator(std::string& item, std::string& value, std::vector<int>& indexVector) const;
 		/**
 		 * \brief Получение оператора.
 		* \param item Предпологаемый оператор.
@@ -32,7 +32,7 @@ namespace args_parse
 		 * \return Кортеж оператора и значения.
 		 * \attention Если value = "", то значение у оператора нет.
 		 */
-		types::Result<std::vector<int>> getOperator(std::string item, OperatorType operatorType) const;
+		types::Result<std::vector<int>> getOperator(std::string& item, OperatorType operatorType) const;
 
 	public:
 		Parser(int argc,

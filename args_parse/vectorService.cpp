@@ -3,7 +3,7 @@
 
 namespace args_parse
 {
-	void invokeProcesses(std::vector<args::Arg*> vector)
+	types::Result<bool> invokeProcesses(std::vector<args::Arg*> vector)
 	{
 		for (auto& arg : vector)
 		{
@@ -11,12 +11,16 @@ namespace args_parse
 
 			if (value == "")
 			{
-				arg->process();
+				auto result = arg->process();
+				if (!result.success) return result;
 			}
 			else
 			{
-				arg->processWithValue(value);
+				auto result = arg->processWithValue(value);
+				if (!result.success) return result;
 			}
 		}
+
+		return { true, true };
 	}
 }

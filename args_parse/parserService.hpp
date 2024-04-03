@@ -1,5 +1,6 @@
 #pragma once
 #include <types/result.hpp>
+
 namespace args_parse
 {
 	/**
@@ -19,7 +20,7 @@ namespace args_parse
 	 * \param str - входная строка.
 	 * \return Тип оператора.
 	 */
-		static OperatorType isOperator(const std::string str);
+		static OperatorType isOperator(const std::string& str);
 		static types::Result<bool> checkIfTheFollowingArgvIsAValue(const char* nextElement,
 			const bool argAllowsUseValue);
 		static types::Result<int> itemConsistsOfAnArgumentAndAValue(std::string& value,

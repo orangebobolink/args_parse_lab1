@@ -9,7 +9,7 @@ namespace args
 		EmptyArg(char shortArg,
 			std::string longArg,
 			std::string description,
-			void (*processFunction)())
+			types::Result<bool>(*processFunction)())
 			: Arg(shortArg, longArg, description, processFunction)
 		{
 			this->hasValue = false;
