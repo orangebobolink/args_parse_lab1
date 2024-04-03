@@ -29,7 +29,7 @@ namespace args_parse
 		return OperatorType::NOPE;
 	}
 
-	int Parser::findLongOperator(std::string item, std::string& value) const
+	types::Result<int> Parser::findLongOperator(std::string item, std::string& value) const
 	{
 		int index = 0;
 		for (auto& arg : this->args) {
@@ -40,12 +40,12 @@ namespace args_parse
 			if (equalSignPosition != std::string::npos && equalSignPosition == 0 && longArg.length() < item.length()) {
 				if (value != "")
 				{
-					throw std::invalid_argument("Multiple value transmission");
+					return { "Multiple value transmission" };
 				}
 
 				value = item.substr(longArg.length());
 
-				return index;
+				return { true, index };
 			}
 
 			const size_t equalSignPositions = longArg.find(item);
@@ -54,21 +54,20 @@ namespace args_parse
 				&& longArg.length() > item.length()
 				&& item.length() > 0) {
 
-				return index;
+				return { true, index };
 			}
 
 			if (longArg == item)
 			{
-				return index;
+				return { true, index };
 			}
 
 			index++;
 		}
-
-		throw std::invalid_argument("operator is invalid");
+		return { "operator is invalid" };
 	}
 
-	void Parser::findShortOperator(std::string item, std::string& value, std::vector<int>& indexVector) const
+	types::Result<bool> Parser::findShortOperator(std::string item, std::string& value, std::vector<int>& indexVector) const
 	{
 		const int LENGHT_OF_CHAR = 1;
 		int index = 0;
@@ -92,26 +91,30 @@ namespace args_parse
 							//this->args[index]->setValue(item);
 
 							indexVector.push_back(index);
-							return;
+							return { true, true };
 						}
 
-						throw std::invalid_argument("Multiple value transmission");
+						return { "Multiple value transmission" };
 					}
 
-					findShortOperator(item, value, indexVector);
+					auto result = findShortOperator(item, value, indexVector);
+
+					if (!result.success) return { result.error };
+
 					//value = item.substr(pos + LENGHT_OF_CHAR);
 				}
 
 				indexVector.push_back(index);
-				return;
+				return { true,true };
 			}
+
 			index++;
 		}
 
-		throw std::invalid_argument("operator is invalid");
+		return { "operator is invalid" };
 	}
 
-	std::vector<int> Parser::getOperator(std::string item, OperatorType operatorType) const
+	types::Result<std::vector<int>> Parser::getOperator(std::string item, OperatorType operatorType) const
 	{
 		std::string value = "";
 		size_t equalSignPosition = item.find('=');
@@ -128,12 +131,17 @@ namespace args_parse
 			const int LENGTH_OF_TWO_DASH = 2;
 			item = item.erase(StartingStringPosition, LENGTH_OF_TWO_DASH);
 
-			auto index = findLongOperator(item, value);
+
+			auto result = findLongOperator(item, value);
+
+			if (!result.success) return { result.error };
+
+			auto index = result.data;
 
 			this->args[index]->setValue(value);
 			indexVector.push_back(index);
 
-			return indexVector;
+			return { true, indexVector };
 		}
 
 		if (operatorType == OperatorType::SHORT)
@@ -142,18 +150,21 @@ namespace args_parse
 			item.erase(StartingStringPosition, LENGTH_OF_ONE_DASH);
 
 
-			findShortOperator(item, value, indexVector);
+			auto result = findShortOperator(item, value, indexVector);
+
+			if (!result.success) return { result.error };
+
 			auto indexOfLastArg = indexVector[0];
 
 			this->args[indexOfLastArg]->setValue(value);
 
-			return indexVector;
+			return { true, indexVector };
 		}
 
-		throw std::invalid_argument("operator is invalid");
+		return { "operator is invalid" };
 	}
 
-	bool Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, const bool argAllowsUseValue)
+	types::Result<bool> Parser::checkIfTheFollowingArgvIsAValue(const char* nextElement, const bool argAllowsUseValue)
 	{
 		bool nextArgIsNoteOperator = false;
 
@@ -164,15 +175,15 @@ namespace args_parse
 
 		if (nextArgIsNoteOperator && !argAllowsUseValue)
 		{
-			throw std::invalid_argument("arg doesn't allow use value");
+			return { "arg doesn't allow use value" };
 		}
 
 		const bool isNextElementValue = nextArgIsNoteOperator && argAllowsUseValue;
 
-		return isNextElementValue;
+		return { true, isNextElementValue };
 	}
 
-	bool Parser::parse()
+	types::Result<bool> Parser::parse()
 	{
 		std::vector<args::Arg*> vectorProcesses;
 
@@ -183,7 +194,11 @@ namespace args_parse
 
 			auto operatorType = isOperator(strItem);
 
-			auto indexVector = getOperator(strItem, operatorType);
+			auto getOperatorResult = getOperator(strItem, operatorType);
+
+			if (!getOperatorResult.success) return { getOperatorResult.error };
+
+			auto indexVector = getOperatorResult.data;
 
 			for (size_t i = 1; i < indexVector.size(); ++i) {
 				auto foundOperator = this->args[indexVector[i]].get();
@@ -196,14 +211,18 @@ namespace args_parse
 			bool isNextElementValue = false;
 			if (i + 1 < argc)
 			{
-				isNextElementValue = checkIfTheFollowingArgvIsAValue(nextElement, foundOperator->getHasAValue());
+				auto result = checkIfTheFollowingArgvIsAValue(nextElement, foundOperator->getHasAValue());
+
+				if (!result.success) return { result.error };
+
+				isNextElementValue = result.data;
 			}
 
 			if (isNextElementValue)
 			{
 				if (foundOperator->getValue() != "")
 				{
-					throw std::invalid_argument("Multiple value transmission");
+					return { "Multiple value transmission" };
 				}
 
 				foundOperator->setValue(nextElement);
@@ -213,12 +232,13 @@ namespace args_parse
 
 			if (foundOperator->getHasAValue() == true && foundOperator->getValue() == "")
 			{
-				throw std::invalid_argument("Operator has to have a value");
+				return { "Operator has to have a value" };
 			}
 
 			if (foundOperator->getValue() != "" && !foundOperator->validateValue(foundOperator->getValue()))
 			{
-				throw std::invalid_argument("Invalid value");
+				return { "Invalid value" };
+
 			}
 
 			vectorProcesses.push_back(foundOperator);
@@ -226,7 +246,7 @@ namespace args_parse
 
 		invokeProcesses(vectorProcesses);
 
-		return true;
+		return { true, true };
 	}
 
 	void Parser::addArg(std::unique_ptr<args::Arg> arg)

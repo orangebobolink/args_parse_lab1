@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.28)
 project(args_parse_test_app LANGUAGES CXX)
 
 # Определяем исполнимый файл и из чего он состоит.
-add_executable(_unit_test_args_parse main.cpp)
+add_executable(_unit_test_args_parse main.cpp testUtils.hpp "testUtils.cpp")
 
 target_link_libraries(_unit_test_args_parse
     PRIVATE

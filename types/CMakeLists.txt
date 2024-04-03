@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.28)
 project(args_parse_types LANGUAGES CXX)
 
 # Определяем библиотеку и указываем из чего она состоит.
-add_library(types STATIC result.hpp)
+add_library(types STATIC result.hpp "result.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET types PROPERTY CXX_STANDARD 17)
