@@ -125,7 +125,8 @@ TEST_CASE("Parser positive", "[dummy][section]")
 		std::vector<std::vector<const char*>> testCasesStrings =
 		{
 			{ " ", "-v", "-v", "-v"},
-			{ " ", "-v", "-v", "-h", "-v"}
+			{ " ", "-v", "-v", "--version"},
+			{ " ", "-v", "--version", "-h", "-v"}
 		};
 		auto testCases = std::move(test_utils::createTestCases(testCasesStrings));
 
