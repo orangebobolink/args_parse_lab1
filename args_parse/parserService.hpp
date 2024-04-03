@@ -16,24 +16,41 @@ namespace args_parse
 	{
 	public:
 		/**
-	 * \brief явл€етс€ ли строка оператором.
-	 * \param str - входна€ строка.
-	 * \return “ип оператора.
-	 */
+		* \brief явл€етс€ ли строка оператором.
+		* \param str - входна€ строка.
+		* \return “ип оператора.
+		*/
 		static OperatorType isOperator(const std::string& str);
+		/**
+		 * \brief явл€етс€ ли следующий аргумент значением.
+		 * \param nextElement - след элемент.
+		 * \param argAllowsUseValue - разрешены ли аргументы.
+		*/
 		static types::Result<bool> checkIfTheFollowingArgvIsAValue(const char* nextElement,
 			const bool argAllowsUseValue);
+		/**
+		 * \brief —остоит ли item из аргументов и значений.
+		*/
 		static types::Result<int> itemConsistsOfAnArgumentAndAValue(std::string& value,
 			std::string& item,
 			std::string& longArg,
 			int index
 		);
+		/**
+		 * \brief ѕроверка состоит ли item из аргументов и значений.
+		*/
 		static bool checkItemConsistsOfAnArgumentAndAValue(std::string& item,
 			std::string& longArg
 		);
+		/**
+		 * \brief ѕроверка написан ли аргумент в неполной форме.
+		*/
 		static bool checkArgumentIsWrittenInAnIncompleteForm(std::string& item,
 			std::string& longArg
 		);
+		/**
+		 * \brief ≈сть ли знак = в строке.
+		*/
 		static void checkTheItemCheckContainsAnEqualSign(std::string& item, std::string& value);
 	};
 }

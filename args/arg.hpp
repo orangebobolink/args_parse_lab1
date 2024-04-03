@@ -32,7 +32,6 @@ namespace args
 		void setValue(std::string value)
 		{
 			this->value = value;
-			//hasValue = true;
 		}
 
 		const std::string getValue()

@@ -81,7 +81,7 @@ namespace test_utils
 		std::vector< std::unique_ptr<args::Arg>> args;
 
 		args.push_back(std::make_unique<args::EmptyArg>(help));
-		args.push_back(std::make_unique<args::EmptyArg>(version));
+		args.push_back(std::make_unique<multy_args::MultyEmptyArg>(version));
 		args.push_back(std::make_unique<args::StringArg>(output));
 		args.push_back(std::make_unique<args::IntArg>(giveMyAge));
 		args.push_back(std::make_unique<args::BoolArg>(isMyProgramCool));
