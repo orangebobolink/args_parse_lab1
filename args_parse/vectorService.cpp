@@ -27,8 +27,6 @@ namespace args_parse
 				return { "Exceeded maximum allowed usage count for this argument" };
 			}
 
-			std::string value = arg.first->getValue();
-
 			auto result = arg.first->process();
 
 			if (!result.success) return result;
