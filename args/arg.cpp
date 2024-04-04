@@ -3,12 +3,27 @@
 
 namespace args
 {
+	bool Arg::getHasValue() const
+	{
+		return hasValue;
+	}
+
+	void Arg::setValue(const std::string& value)
+	{
+		this->value = value;
+	}
+
+	std::string Arg::getValue() const
+	{
+		return value;
+	}
+
 	Arg::Arg(char shortArg,
-		std::string longArg,
-		std::string description,
-		types::Result<bool>(*processFunction)(),
-		types::Result<bool>(*processWithValueFunction)(std::string value))
-		: shortArg(shortArg), longArg(longArg), description(description),
+	         std::string longArg,
+	         std::string description,
+	         types::Result<bool>(*processFunction)(),
+	         types::Result<bool>(*processWithValueFunction)(std::string value))
+		: description(description), shortArg(shortArg), longArg(longArg),
 		processFunction(processFunction), processWithValueFunction(processWithValueFunction) {}
 
 	std::string Arg::getDescriptiong() const

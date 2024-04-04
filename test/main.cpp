@@ -16,7 +16,9 @@ TEST_CASE("Validation", "[dummy][section]")
 	std::string stringStr = "something";
 
 	SECTION("Bool validation") {
-		args::BoolArg arg(' ', "", "", [](std::string value) {return types::Result<bool>(true, true); });
+		args::BoolArg arg(' ', "", "", 
+			[](std::string value) 
+			{return types::Result<bool>(true, true); });
 
 		REQUIRE(arg.validateValue(boolStr));
 		REQUIRE_FALSE(arg.validateValue(numberStr));
@@ -24,7 +26,9 @@ TEST_CASE("Validation", "[dummy][section]")
 	}
 
 	SECTION("Int validation") {
-		args::IntArg arg(' ', "", "", [](std::string value) {return types::Result<bool>(true, true); });
+		args::IntArg arg(' ', "", "", 
+			[](std::string value) 
+			{return types::Result<bool>(true, true); });
 
 		REQUIRE(arg.validateValue(numberStr));
 		REQUIRE_FALSE(arg.validateValue(boolStr));
@@ -32,7 +36,9 @@ TEST_CASE("Validation", "[dummy][section]")
 	}
 
 	SECTION("String validation") {
-		args::StringArg arg(' ', "", "", [](std::string value) {return types::Result<bool>(true, true); });
+		args::StringArg arg(' ', "", "", 
+			[](std::string value) 
+			{return types::Result<bool>(true, true); });
 
 		REQUIRE(arg.validateValue(stringStr));
 		REQUIRE(arg.validateValue(boolStr));
@@ -46,7 +52,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 	{
 		std::cout << "1 SECTION" << std::endl;
 
-		std::vector<std::vector<const char*>> testCasesStrings =
+		const std::vector<std::vector<const char*>> testCasesStrings =
 		{
 			{ " ", "-h", "--output", "hello" },
 			{ " ", "-h", "-o", "hello" },
@@ -65,7 +71,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 	{
 		std::cout << "2 SECTION" << std::endl;
 
-		std::vector<std::vector<const char*>> testCasesStrings =
+		const std::vector<std::vector<const char*>> testCasesStrings =
 		{
 			{" ", "--hel"},
 			{" ", "--o", "Hello"}
@@ -83,7 +89,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 	{
 		std::cout << "3 SECTION" << std::endl;
 
-		std::vector<std::vector<const char*>> testCasesStrings =
+		const std::vector<std::vector<const char*>> testCasesStrings =
 		{
 			{" ", "-hoGlued"},
 			{" ", "-ho=Glued"},
@@ -103,7 +109,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 	{
 		std::cout << "4 SECTION" << std::endl;
 
-		std::vector<std::vector<const char*>> testCasesStrings =
+		const std::vector<std::vector<const char*>> testCasesStrings =
 		{
 			{ " ", "-h", "--output", "This is output" },
 			{ " ", "-h", "--output=This is output" },
@@ -122,7 +128,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 	{
 		std::cout << "5 SECTION" << std::endl;
 
-		std::vector<std::vector<const char*>> testCasesStrings =
+		const std::vector<std::vector<const char*>> testCasesStrings =
 		{
 			{ " ", "-v", "-v", "-v"},
 			{ " ", "-v", "-v", "--version"},
@@ -140,7 +146,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 TEST_CASE("Parser negative", "[dummy][section][throws]")
 {
-	std::vector<std::vector<const char*>> testCasesStrings =
+	const std::vector<std::vector<const char*>> testCasesStrings =
 	{
 		{" ", "-d"},
 		{" ", "Value"},

@@ -25,26 +25,15 @@ namespace args
 		int maxCount = 1;
 
 	public:
-		const bool getHasAValue()
-		{
-			return hasValue;
-		}
-
-		void setValue(std::string value)
-		{
-			this->value = value;
-		}
-
-		const std::string getValue()
-		{
-			return value;
-		}
+		bool getHasValue() const;
+		void setValue(const std::string& value);
+		std::string getValue() const;
 
 		Arg(char shortArg,
-			std::string longArg,
-			std::string description,
-			types::Result<bool>(*processFunction)(),
-			types::Result<bool>(*processWithValueFunction)(std::string value));
+		    std::string longArg,
+		    std::string description,
+		    types::Result<bool>(*processFunction)(),
+		    types::Result<bool>(*processWithValueFunction)(std::string value));
 
 		Arg(char shortArg,
 			std::string longArg,

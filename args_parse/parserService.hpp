@@ -1,10 +1,12 @@
 #pragma once
 #include <types/result.hpp>
 
+#include "args/arg.hpp"
+
 namespace args_parse
 {
 	/**
-	 * \brief Тип операторова короткий, длинный или неизвестный.
+	 * \brief РћРїСЂРµРґРµР»СЏРµС‚ С‚РёРї РѕРїРµСЂР°С‚РѕСЂР°.
 	 */
 	enum class OperatorType
 	{
@@ -16,41 +18,53 @@ namespace args_parse
 	{
 	public:
 		/**
-		* \brief Является ли строка оператором.
-		* \param str - входная строка.
-		* \return Тип оператора.
+		* \brief РћРїСЂРµРґРµР»СЏРµС‚, СЏРІР»СЏРµС‚СЃСЏ Р»Рё СЃС‚СЂРѕРєР° РѕРїРµСЂР°С‚РѕСЂРѕРј.
+		* \param str - РёСЃС…РѕРґРЅР°СЏ СЃС‚СЂРѕРєР°.
+		* \return РўРёРї РѕРїРµСЂР°С‚РѕСЂР°.
 		*/
 		static OperatorType isOperator(const std::string& str);
 		/**
-		 * \brief Является ли следующий аргумент значением.
-		 * \param nextElement - след элемент.
-		 * \param argAllowsUseValue - разрешены ли аргументы.
+		 * \brief РћРїСЂРµРґРµР»СЏРµС‚, СЏРІР»СЏРµС‚СЃСЏ Р»Рё СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚ Р·РЅР°С‡РµРЅРёРµРј Р°СЂРіСѓРјРµРЅС‚Р°.
+		 * \param nextElement - СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚.
+		 * \param argAllowsUseValue - СЂР°Р·СЂРµС€РµРЅРѕ Р»Рё РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Р·РЅР°С‡РµРЅРёРµ РґР»СЏ Р°СЂРіСѓРјРµРЅС‚Р°.
 		*/
-		static types::Result<bool> checkIfTheFollowingArgvIsAValue(const char* nextElement,
+		static types::Result<bool> checkIfFollowingArgvIsValue(const char* nextElement,
 			const bool argAllowsUseValue);
 		/**
-		 * \brief Состоит ли item из аргументов и значений.
+		 * \brief РћРїСЂРµРґРµР»СЏРµС‚, СЃРѕСЃС‚РѕРёС‚ Р»Рё СЌР»РµРјРµРЅС‚ РёР· Р°СЂРіСѓРјРµРЅС‚Р° Рё Р·РЅР°С‡РµРЅРёСЏ.
 		*/
-		static types::Result<int> itemConsistsOfAnArgumentAndAValue(std::string& value,
+		static types::Result<int> itemConsistsOfArgumentAndValue(std::string& value,
 			std::string& item,
 			std::string& longArg,
 			int index
 		);
 		/**
-		 * \brief Проверка состоит ли item из аргументов и значений.
+		 * \brief РџСЂРѕРІРµСЂСЏРµС‚, СЃРѕСЃС‚РѕРёС‚ Р»Рё СЌР»РµРјРµРЅС‚ РёР· Р°СЂРіСѓРјРµРЅС‚Р° Рё Р·РЅР°С‡РµРЅРёСЏ.
 		*/
-		static bool checkItemConsistsOfAnArgumentAndAValue(std::string& item,
-			std::string& longArg
+		static bool checkItemConsistsOfArgumentAndValue(std::string& item,
+		                                                   const std::string& longArg
 		);
 		/**
-		 * \brief Проверка написан ли аргумент в неполной форме.
+		 * \brief РџСЂРѕРІРµСЂСЏРµС‚, Р·Р°РїРёСЃР°РЅ Р»Рё Р°СЂРіСѓРјРµРЅС‚ РІ РЅРµРїРѕР»РЅРѕР№ С„РѕСЂРјРµ.
 		*/
-		static bool checkArgumentIsWrittenInAnIncompleteForm(std::string& item,
-			std::string& longArg
+		static bool checkArgumentIsWrittenInIncompleteForm(const std::string& item,
+		                                                     std::string& longArg
 		);
 		/**
-		 * \brief Есть ли знак = в строке.
+		 * \brief РџСЂРѕРІРµСЂСЏРµС‚, СЃРѕРґРµСЂР¶РёС‚ Р»Рё СЌР»РµРјРµРЅС‚ Р·РЅР°Рє СЂР°РІРµРЅСЃС‚РІР°.
 		*/
-		static void checkTheItemCheckContainsAnEqualSign(std::string& item, std::string& value);
+		static void checkItemForEqualSign(std::string& item, std::string& value);
+		/**
+		 * \brief РџСЂРѕРІРµСЂСЏРµС‚, Р°СЂРіСѓРјРµРЅС‚ РёРјРµРµС‚ Р·РЅР°С‡РµРЅРёРµ.
+		*/
+		static types::Result<bool> checkArgumentHasValue(args::Arg* foundOperator);
+		/**
+		 * \brief РџСЂРѕРІРµСЂСЏРµС‚, Р°СЂРіСѓРјРµРЅС‚ РёРјРµРµС‚ РЅРµ РІР°Р»РёРґРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ.
+		*/
+		static types::Result<bool> checkArgumentHasNotInvalidValue(args::Arg* foundOperator);
+		/**
+		 * \brief РџСЂРѕРІРµСЂСЏРµС‚, РІР°Р»РёРґРЅРѕСЃС‚СЊ Р°СЂРіСѓРјРµРЅС‚Р°.
+		*/
+		static types::Result<bool> checkArgumentValidity(args::Arg* arg);
 	};
 }
