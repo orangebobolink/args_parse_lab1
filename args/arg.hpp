@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <string>
 #include <typeinfo>
 #include <types/result.hpp>

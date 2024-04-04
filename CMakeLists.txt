@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.28)
 
 # Говорим CMake что за проект.
 project(args_parse_lab1 LANGUAGES CXX)

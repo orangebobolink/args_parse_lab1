@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include "parser.hpp"
 #include "vectorService.hpp"
 #include "parserService.hpp"

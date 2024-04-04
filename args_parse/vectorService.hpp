@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <args/arg.hpp>
 #include <vector>
 #include <tuple>
