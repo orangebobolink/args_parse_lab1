@@ -107,8 +107,8 @@ namespace args_parse
 			if (!result.success) return { result.error };
 
 			const auto index = result.data;
-
 			this->args[index]->setValue(value);
+
 			indexVector.push_back(index);
 
 			return { true, indexVector };
@@ -124,7 +124,6 @@ namespace args_parse
 			if (!result.success) return { result.error };
 
 			const auto indexOfLastArg = indexVector[0];
-
 			this->args[indexOfLastArg]->setValue(value);
 
 			return { true, indexVector };
