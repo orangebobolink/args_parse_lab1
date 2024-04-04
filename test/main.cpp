@@ -16,8 +16,8 @@ TEST_CASE("Validation", "[dummy][section]")
 	std::string stringStr = "something";
 
 	SECTION("Bool validation") {
-		args::BoolArg arg(' ', "", "", 
-			[](std::string value) 
+		args::BoolArg arg(' ', "", "",
+			[]()
 			{return types::Result<bool>(true, true); });
 
 		REQUIRE(arg.validateValue(boolStr));
@@ -26,8 +26,8 @@ TEST_CASE("Validation", "[dummy][section]")
 	}
 
 	SECTION("Int validation") {
-		args::IntArg arg(' ', "", "", 
-			[](std::string value) 
+		args::IntArg arg(' ', "", "",
+			[]()
 			{return types::Result<bool>(true, true); });
 
 		REQUIRE(arg.validateValue(numberStr));
@@ -36,8 +36,8 @@ TEST_CASE("Validation", "[dummy][section]")
 	}
 
 	SECTION("String validation") {
-		args::StringArg arg(' ', "", "", 
-			[](std::string value) 
+		args::StringArg arg(' ', "", "",
+			[]()
 			{return types::Result<bool>(true, true); });
 
 		REQUIRE(arg.validateValue(stringStr));

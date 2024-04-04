@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-types::Result<bool> multy_args::MultyStringlArg::processWithValue(std::string value)
+types::Result<bool> multy_args::MultyStringlArg::process()
 {
 	std::cout << value << " " << usageCount << std::endl;
 

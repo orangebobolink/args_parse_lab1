@@ -9,12 +9,13 @@ namespace args
 		ValueArg(char shortArg,
 			std::string longArg,
 			std::string description,
-			types::Result<bool>(*processWithValueFunction)(std::string value))
-			: Arg(shortArg, longArg, description, processWithValueFunction)
+			types::Result<bool>(*process)())
+			: Arg(shortArg, longArg, description, process)
 		{
 			this->hasValue = true;
 		}
 
 		bool validateValue(std::string value) override;
+		types::Result<bool> process() override;
 	};
 }

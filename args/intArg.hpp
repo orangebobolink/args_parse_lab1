@@ -9,8 +9,8 @@ namespace args
 		IntArg(char shortArg,
 			std::string longArg,
 			std::string description,
-			types::Result<bool>(*processWithValueFunction)(std::string value))
-			: ValueArg(shortArg, longArg, description, processWithValueFunction) { }
+			types::Result<bool>(*process)())
+			: ValueArg(shortArg, longArg, description, process) {}
 
 
 		bool validateValue(std::string value) override;

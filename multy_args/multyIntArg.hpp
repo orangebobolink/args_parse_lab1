@@ -10,14 +10,14 @@ namespace multy_args
 		MultyIntArg(char shortArg,
 			std::string longArg,
 			std::string description,
-			types::Result<bool>(*processWithValueFunction)(std::string value),
+			types::Result<bool>(*process)(),
 			int maxUsageCount = 3)
-			: IntArg(shortArg, longArg, description, processWithValueFunction)
+			: IntArg(shortArg, longArg, description, process)
 		{
 			this->allowMultyValues = true;
 			this->maxUsageCount = maxUsageCount;
 		}
 
-		types::Result<bool> processWithValue(std::string value) override;
+		types::Result<bool> process() override;
 	};
 }

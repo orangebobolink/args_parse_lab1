@@ -13,11 +13,7 @@ namespace args
 	protected:
 		char shortArg = ' ';
 		std::string longArg = "";
-		/// Может ли содержать value.
-		/// Логика без value.
 		types::Result<bool>(*processFunction)();
-		/// Логика с value.
-		types::Result<bool>(*processWithValueFunction)(std::string value);
 		bool hasValue = false;
 		std::string value = "";
 		int usageCount = 0;
@@ -31,24 +27,9 @@ namespace args
 		std::string getValue() const;
 
 		Arg(char shortArg,
-		    std::string longArg,
-		    std::string description,
-		    types::Result<bool>(*processFunction)(),
-		    types::Result<bool>(*processWithValueFunction)(std::string value));
-
-		Arg(char shortArg,
 			std::string longArg,
 			std::string description,
-			types::Result<bool>(*processFunction)())
-			: Arg(shortArg, longArg, description, processFunction, [](std::string value) {return types::Result(true, true); })
-		{}
-
-		Arg(char shortArg,
-			std::string longArg,
-			std::string description,
-			types::Result<bool>(*processWithValueFunction)(std::string value))
-			: Arg(shortArg, longArg, description, []() {return types::Result(true, true); }, processWithValueFunction)
-		{}
+			types::Result<bool>(*processFunction)());
 
 		std::string getDescriptiong() const;
 		void setDescription(std::string description);
@@ -57,7 +38,6 @@ namespace args
 		bool virtual validateValue(std::string value);
 
 		virtual types::Result<bool> process();
-		virtual types::Result<bool> processWithValue(std::string value);
 		void incrementUsageCount();
 		void setUsageCount(int count);
 		int getUsageCount() const;

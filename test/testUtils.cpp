@@ -56,25 +56,22 @@ namespace test_utils
 
 		args::StringArg output('o', "output",
 			"It's output operation",
-			[](std::string value)
+			[]()
 			{
-				std::cout << value << std::endl;
 				return types::Result(true, true);
 			});
 
 		args::IntArg giveMyAge('g', "giveMyAge",
 			"It has to show my age",
-			[](std::string value)
+			[]()
 			{
-				std::cout << value << std::endl;
 				return types::Result(true, true);
 			});
 
 		args::BoolArg isMyProgramCool('i', "isMyProgramCool",
 			"It has to show you the truth",
-			[](std::string value)
+			[]()
 			{
-				std::cout << value << std::endl;
 				return types::Result(true, true);
 			});
 

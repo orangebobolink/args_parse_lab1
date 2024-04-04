@@ -1,8 +1,8 @@
 #include "multyBoolArg.hpp"
 #include <iostream>
 
-types::Result<bool> multy_args::MultyBoolArg::processWithValue(std::string value)
+types::Result<bool> multy_args::MultyBoolArg::process()
 {
-	std::cout << value << " " << usageCount << std::endl;
+	std::cout << this->value << " " << usageCount << std::endl;
 	return { true, true };
 }

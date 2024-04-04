@@ -1,9 +1,9 @@
 #include "multyIntArg.hpp"
 #include <iostream>
 
-types::Result<bool> multy_args::MultyIntArg::processWithValue(std::string value)
+types::Result<bool> multy_args::MultyIntArg::process()
 {
-	std::cout << value << " " << usageCount << std::endl;
+	std::cout << this->value << " " << usageCount << std::endl;
 
 	return { true, true };
 }
