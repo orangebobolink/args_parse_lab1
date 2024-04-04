@@ -62,7 +62,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 		for (auto& testCase : testCases)
 		{
-			bool assert = runParce(testCase.first, testCase.second.get()).success;
+			const bool assert = runParce(testCase.first, testCase.second.get()).success;
 			REQUIRE(assert);
 		}
 	}
@@ -80,7 +80,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 		for (auto& testCase : testCases)
 		{
-			bool assert = runParce(testCase.first, testCase.second.get()).success;
+			const bool assert = runParce(testCase.first, testCase.second.get()).success;
 			REQUIRE(assert);
 		}
 	}
@@ -100,7 +100,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 		for (auto& testCase : testCases)
 		{
-			bool assert = runParce(testCase.first, testCase.second.get()).success;
+			const bool assert = runParce(testCase.first, testCase.second.get()).success;
 			REQUIRE(assert);
 		}
 	}
@@ -119,7 +119,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 		for (auto& testCase : testCases)
 		{
-			bool assert = runParce(testCase.first, testCase.second.get()).success;
+			const bool assert = runParce(testCase.first, testCase.second.get()).success;
 			REQUIRE(assert);
 		}
 	}
@@ -138,7 +138,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 		for (auto& testCase : testCases)
 		{
-			bool assert = runParce(testCase.first, testCase.second.get()).success;
+			const bool assert = runParce(testCase.first, testCase.second.get()).success;
 			REQUIRE(assert);
 		}
 	}
@@ -157,11 +157,11 @@ TEST_CASE("Parser negative", "[dummy][section][throws]")
 		{ " ", "-hs" },
 		{" ", "-h", "--help"}
 	};
-	auto testCases = std::move(test_utils::createTestCases(testCasesStrings));
+	const auto testCases = std::move(test_utils::createTestCases(testCasesStrings));
 
 	for (auto& testCase : testCases)
 	{
-		bool assert = runParce(testCase.first, testCase.second.get()).success;
+		const bool assert = runParce(testCase.first, testCase.second.get()).success;
 		REQUIRE_FALSE(assert);
 	}
 }
