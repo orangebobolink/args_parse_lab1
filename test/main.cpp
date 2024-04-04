@@ -155,7 +155,8 @@ TEST_CASE("Parser negative", "[dummy][section][throws]")
 		{ " ", "--giveMyAge", "hello" },
 		{ " ", "--giveMyAge"},
 		{ " ", "-hs" },
-		{" ", "-h", "--help"}
+		{" ", "-h", "--help"},
+		{" ", "-v", "-v", "-v", "-v"},
 	};
 	const auto testCases = std::move(test_utils::createTestCases(testCasesStrings));
 

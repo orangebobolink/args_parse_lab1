@@ -22,10 +22,11 @@ namespace args
 		std::string value = "";
 		int usageCount = 0;
 		bool allowMultyValues = false;
-		int maxCount = 1;
+		int maxUsageCount = 1;
 
 	public:
 		bool getHasValue() const;
+		int getMaxUsageCount() const;
 		void setValue(const std::string& value);
 		std::string getValue() const;
 

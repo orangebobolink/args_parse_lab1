@@ -1,6 +1,7 @@
 #include "vectorService.hpp"
 #include <memory>
 #include <unordered_map>
+#include <iostream>
 
 namespace args_parse
 {
@@ -18,6 +19,12 @@ namespace args_parse
 			if (arg.first->getUsageCount() > 1 && !arg.first->getAllowMultyValues())
 			{
 				return { "Forbiddent mylty arg for this argument" };
+			}
+
+			if(arg.first->getAllowMultyValues() 
+				&& arg.first->getUsageCount() > arg.first->getMaxUsageCount())
+			{
+				return { "Exceeded maximum allowed usage count for this argument" };
 			}
 
 			std::string value = arg.first->getValue();

@@ -52,7 +52,7 @@ namespace test_utils
 			{
 				std::cout << "Version" << std::endl;
 				return types::Result(true, true);
-			});
+			}, 3);
 
 		args::StringArg output('o', "output",
 			"It's output operation",

@@ -10,10 +10,14 @@ namespace multy_args
 		MultyStringlArg(char shortArg,
 			std::string longArg,
 			std::string description,
-			types::Result<bool>(*processWithValueFunction)(std::string value))
+			types::Result<bool>(*processWithValueFunction)(std::string value),
+			int maxUsageCount = 3)
 			: StringArg(shortArg, longArg, description, processWithValueFunction)
 		{
 			this->allowMultyValues = true;
+			this->maxUsageCount = maxUsageCount;
 		}
+
+		types::Result<bool> processWithValue(std::string value) override;
 	};
 }

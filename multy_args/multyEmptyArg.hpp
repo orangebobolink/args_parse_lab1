@@ -10,10 +10,12 @@ namespace multy_args
 		MultyEmptyArg(char shortArg,
 			std::string longArg,
 			std::string description,
-			types::Result<bool>(*processFunction)())
+			types::Result<bool>(*processFunction)(),
+			int maxUsageCount = 3)
 			: EmptyArg(shortArg, longArg, description, processFunction)
 		{
 			this->allowMultyValues = true;
+			this->maxUsageCount = maxUsageCount;
 		}
 
 		types::Result<bool> process() override;

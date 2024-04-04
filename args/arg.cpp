@@ -8,6 +8,11 @@ namespace args
 		return hasValue;
 	}
 
+	int Arg::getMaxUsageCount() const
+	{
+		return this->maxUsageCount;
+	}
+
 	void Arg::setValue(const std::string& value)
 	{
 		this->value = value;
