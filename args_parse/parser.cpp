@@ -173,11 +173,10 @@ namespace args_parse
 
 			const auto operatorType = ParserService::isOperator(strItem);
 
-			auto getOperatorResult = getOperator(strItem, operatorType);
+			auto resultGetOperator = getOperator(strItem, operatorType);
+			if (!resultGetOperator.success) return { resultGetOperator.error };
 
-			if (!getOperatorResult.success) return { getOperatorResult.error };
-
-			auto indexVector = getOperatorResult.data;
+			auto indexVector = resultGetOperator.data;
 
 			for (size_t i = 1; i < indexVector.size(); ++i) {
 				args::Arg* foundOperator = this->args[indexVector[i]].get();
