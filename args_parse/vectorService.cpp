@@ -18,20 +18,20 @@ namespace args_parse
 		{
 			if (arg.first->getUsageCount() > 1 && !arg.first->getAllowMultyValues())
 			{
-				return { "Forbiddent mylty arg for this argument" };
+				return { std::string("Forbiddent mylty arg for this argument") };
 			}
 
 			if (arg.first->getAllowMultyValues()
 				&& arg.first->getUsageCount() > arg.first->getMaxUsageCount())
 			{
-				return { "Exceeded maximum allowed usage count for this argument" };
+				return { std::string("Exceeded maximum allowed usage count for this argument") };
 			}
 
 			auto result = arg.first->process();
 
-			if (!result.success) return result;
+			if (!result.data.has_value()) return result;
 		}
 
-		return { true, true };
+		return { true };
 	}
 }

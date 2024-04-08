@@ -2,14 +2,18 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include "args/boolArg.hpp"
-#include "args/emptyArg.hpp"
-#include "args/intArg.hpp"
-#include "args/stringArg.hpp"
 #include "args_parse/parser.hpp"
 
 namespace test_utils
 {
+	struct TestStruct
+	{
+		int size;
+		std::unique_ptr<const char* []> arguments;
+
+		TestStruct(int size, std::unique_ptr<const char* []> arguments)
+			: size(size), arguments(move(arguments)) {}
+	};
 	/**
 		* \brief ������� ����������� ������.
 	*/
@@ -17,13 +21,13 @@ namespace test_utils
 	/**
 		* \brief ������� �������� ����� ����������.
 	*/
-	std::vector< std::unique_ptr<args::Arg>> getTestArgs();
+	std::vector<std::unique_ptr<args::Arg>> getTestArgs();
 	/**
 		* \brief ������� �������� ������.
 	*/
-	std::pair<int, std::unique_ptr<const char* []>> createTestCase(const std::vector<const char*>& strings);
+	TestStruct createTestCase(const std::vector<const char*>& strings);
 	/**
 		* \brief ������� ����� �������� �������.
 	*/
-	std::vector<std::pair<int, std::unique_ptr<const char* []>>> createTestCases(const std::vector<std::vector<const char*>>& testCasesStrings);
+	std::vector<TestStruct> createTestCases(const std::vector<std::vector<const char*>>& testCasesStrings);
 }

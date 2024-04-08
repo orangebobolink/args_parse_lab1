@@ -18,7 +18,7 @@ TEST_CASE("Validation", "[dummy][section]")
 	SECTION("Bool validation") {
 		args::BoolArg arg(' ', "", "",
 			[]()
-			{return types::Result<bool>(true, true); });
+			{return types::Result<bool>(true); });
 
 		REQUIRE(arg.validateValue(boolStr));
 		REQUIRE_FALSE(arg.validateValue(numberStr));
@@ -28,7 +28,7 @@ TEST_CASE("Validation", "[dummy][section]")
 	SECTION("Int validation") {
 		args::IntArg arg(' ', "", "",
 			[]()
-			{return types::Result<bool>(true, true); });
+			{return types::Result<bool>(true); });
 
 		REQUIRE(arg.validateValue(numberStr));
 		REQUIRE_FALSE(arg.validateValue(boolStr));
@@ -38,7 +38,7 @@ TEST_CASE("Validation", "[dummy][section]")
 	SECTION("String validation") {
 		args::StringArg arg(' ', "", "",
 			[]()
-			{return types::Result<bool>(true, true); });
+			{return types::Result<bool>(true); });
 
 		REQUIRE(arg.validateValue(stringStr));
 		REQUIRE(arg.validateValue(boolStr));
@@ -62,7 +62,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 		for (auto& testCase : testCases)
 		{
-			const bool assert = runParce(testCase.first, testCase.second.get()).success;
+			const bool assert = runParce(testCase.size, testCase.arguments.get()).isOk();
 			REQUIRE(assert);
 		}
 	}
@@ -80,7 +80,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 		for (auto& testCase : testCases)
 		{
-			const bool assert = runParce(testCase.first, testCase.second.get()).success;
+			const bool assert = runParce(testCase.size, testCase.arguments.get()).isOk();
 			REQUIRE(assert);
 		}
 	}
@@ -100,7 +100,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 		for (auto& testCase : testCases)
 		{
-			const bool assert = runParce(testCase.first, testCase.second.get()).success;
+			const bool assert = runParce(testCase.size, testCase.arguments.get()).isOk();
 			REQUIRE(assert);
 		}
 	}
@@ -119,7 +119,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 		for (auto& testCase : testCases)
 		{
-			const bool assert = runParce(testCase.first, testCase.second.get()).success;
+			const bool assert = runParce(testCase.size, testCase.arguments.get()).isOk();
 			REQUIRE(assert);
 		}
 	}
@@ -138,7 +138,7 @@ TEST_CASE("Parser positive", "[dummy][section]")
 
 		for (auto& testCase : testCases)
 		{
-			const bool assert = runParce(testCase.first, testCase.second.get()).success;
+			const bool assert = runParce(testCase.size, testCase.arguments.get()).isOk();
 			REQUIRE(assert);
 		}
 	}
@@ -162,7 +162,7 @@ TEST_CASE("Parser negative", "[dummy][section][throws]")
 
 	for (auto& testCase : testCases)
 	{
-		const bool assert = runParce(testCase.first, testCase.second.get()).success;
+		const bool assert = runParce(testCase.size, testCase.arguments.get()).isOk();
 		REQUIRE_FALSE(assert);
 	}
 }
