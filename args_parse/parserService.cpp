@@ -5,28 +5,29 @@
 
 namespace args_parse
 {
-	OperatorType ParserService::isOperator(const std::string& str)
+	OperatorType isOperator(const std::string& str)
 	{
 		if (str.size() >= 2
 			&& str[0] == '-'
 			&& str[1] == '-') {
 			return OperatorType::LONG;
 		}
-		else if (!str.empty()
+
+		if (!str.empty()
 			&& str[0] == '-') {
 			return OperatorType::SHORT;
 		}
 
 		return OperatorType::NOPE;
 	}
-	types::Result<bool> ParserService::checkIfFollowingArgvIsValue(const char* nextElement,
+	types::Result<bool> checkIfFollowingArgvIsValue(const char* nextElement,
 		const bool argAllowsUseValue)
 	{
 		bool nextArgIsNoteOperator = false;
 
 		if (nextElement != NULL)
 		{
-			nextArgIsNoteOperator = ParserService::isOperator(nextElement) == OperatorType::NOPE;
+			nextArgIsNoteOperator = isOperator(nextElement) == OperatorType::NOPE;
 		}
 
 		if (nextArgIsNoteOperator && !argAllowsUseValue)
@@ -36,9 +37,9 @@ namespace args_parse
 
 		const bool isNextElementValue = nextArgIsNoteOperator && argAllowsUseValue;
 
-		return { true, isNextElementValue };
+		return {isNextElementValue };
 	}
-	types::Result<int> ParserService::itemConsistsOfArgumentAndValue(std::string& value,
+	types::Result<int> itemConsistsOfArgumentAndValue(std::string& value,
 		std::string& item,
 		std::string& longArg,
 		int index
@@ -51,9 +52,9 @@ namespace args_parse
 
 		value = item.substr(longArg.length());
 
-		return { true, index };
+		return { index };
 	}
-	bool ParserService::checkItemConsistsOfArgumentAndValue(std::string& item, const std::string& longArg)
+	bool checkItemConsistsOfArgumentAndValue(std::string& item, const std::string& longArg)
 	{
 		const size_t equalSignPosition = item.find(longArg);
 		const bool theItemCheckConsistsOfAnArgumentAndAValue =
@@ -63,7 +64,7 @@ namespace args_parse
 
 		return theItemCheckConsistsOfAnArgumentAndAValue;
 	}
-	bool ParserService::checkArgumentIsWrittenInIncompleteForm(const std::string& item, std::string& longArg)
+	bool checkArgumentIsWrittenInIncompleteForm(const std::string& item, std::string& longArg)
 	{
 		const size_t equalSignPosition = longArg.find(item);
 		const bool isArgumentWrittenInAnIncompleteForm =
@@ -73,7 +74,7 @@ namespace args_parse
 
 		return isArgumentWrittenInAnIncompleteForm;
 	}
-	void ParserService::checkItemForEqualSign(std::string& item, std::string& value)
+	void checkItemForEqualSign(std::string& item, std::string& value)
 	{
 		const size_t equalSignPosition = item.find('=');
 
@@ -83,7 +84,7 @@ namespace args_parse
 		}
 	}
 
-	types::Result<bool> ParserService::checkArgumentHasValue(args::Arg* foundOperator)
+	types::Result<bool> checkArgumentHasValue(args::Arg* foundOperator)
 	{
 		const bool argHaveToHaveValue = foundOperator->getHasValue() == true;
 		const bool argHasValue = foundOperator->getValue().empty();
@@ -93,10 +94,10 @@ namespace args_parse
 			return { "Operator has to have a value" };
 		}
 
-		return { true, true };
+		return {true };
 	}
 
-	types::Result<bool> ParserService::checkArgumentHasNotInvalidValue(args::Arg* foundOperator)
+	types::Result<bool> checkArgumentHasNotInvalidValue(args::Arg* foundOperator)
 	{
 		const auto valueIsNotEmpty = !foundOperator->getValue().empty();
 		const auto valueDoesNotPassValidation = !foundOperator->validateValue(foundOperator->getValue());
@@ -107,17 +108,17 @@ namespace args_parse
 
 		}
 
-		return { true, true };
+		return {true };
 	}
 
-	types::Result<bool> ParserService::checkArgumentValidity(args::Arg* arg)
+	types::Result<bool> checkArgumentValidity(args::Arg* arg)
 	{
 		auto resultHasValue = checkArgumentHasValue(arg);
-		if (!resultHasValue.success) return resultHasValue;
+		if (!resultHasValue.data.has_value()) return resultHasValue;
 
 		auto resultHasNotInvalidValue = checkArgumentHasNotInvalidValue(arg);
-		if (!resultHasNotInvalidValue.success) return resultHasNotInvalidValue;
+		if (!resultHasNotInvalidValue.data.has_value()) return resultHasNotInvalidValue;
 
-		return { true, true };
+		return {true };
 	}
 }

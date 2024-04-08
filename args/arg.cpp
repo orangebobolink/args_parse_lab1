@@ -3,83 +3,72 @@
 
 namespace args
 {
-	bool Arg::getHasValue() const
+	template<typename T>
+	bool Arg<T>::getHasValue() const
 	{
 		return hasValue;
 	}
 
-	int Arg::getMaxUsageCount() const
-	{
-		return this->maxUsageCount;
-	}
-
-	void Arg::setValue(const std::string& value)
+	template<typename T>
+	void Arg<T>::setValue(T value)
 	{
 		this->value = value;
 	}
 
-	std::string Arg::getValue() const
+	template<typename T>
+	T Arg<T>::getValue() const
 	{
 		return value;
 	}
 
-	Arg::Arg(char shortArg,
+	template<typename T>
+	Arg<T>::Arg(char shortArg,
 		std::string longArg,
 		std::string description,
-		types::Result<bool>(*processFunction)())
+		const std::function<types::Result<bool>(args_parse::Parser* parser, Arg*)> process)
 		: description(description), shortArg(shortArg), longArg(longArg),
-		processFunction(processFunction) {}
+		processArg(process) {}
 
-	std::string Arg::getDescriptiong() const
+	template<typename T>
+	std::string Arg<T>::getDescriptiong() const
 	{
 		return this->description;
 	}
 
-	void Arg::setDescription(std::string description)
+	template<typename T>
+	void Arg<T>::setDescription(std::string description)
 	{
 		this->description = description;
 	}
 
-	char Arg::getShortArg() const
+	template<typename T>
+	char Arg<T>::getShortArg() const
 	{
 		return this->shortArg;
 	}
 
-	std::string Arg::getLongArg() const
+	template<typename T>
+	std::string Arg<T>::getLongArg() const
 	{
 		return this->longArg;
 	}
 
-	types::Result<bool> Arg::process()
+	template<typename T>
+	types::Result<bool> Arg<T>::process(args_parse::Parser* parser)
 	{
 		if (!hasValue && value != "")
 		{
 			return { "Value is forbidden" };
 		}
 
-		return this->processFunction();
+		return this->processArg(parser, this);
 	}
 
-	bool Arg::validateValue(std::string value)
+	template<typename T>
+	bool Arg<T>::validateValue(std::string value)
 	{
 		return false;
 	}
 
-	void Arg::incrementUsageCount() {
-		this->usageCount++;
-	}
-
-	void Arg::setUsageCount(int count) {
-		this->usageCount = count;
-	}
-
-	int Arg::getUsageCount() const
-	{
-		return this->usageCount;
-	}
-
-	bool Arg::getAllowMultyValues() const
-	{
-		return this->allowMultyValues;
-	}
+	 
 }

@@ -1,15 +1,11 @@
 #pragma once
-#include <iostream>
 #include <vector>
 #include <memory>
-#include "args/boolArg.hpp"
-#include "args/emptyArg.hpp"
-#include "args/intArg.hpp"
-#include "args/stringArg.hpp"
 #include "args_parse/parser.hpp"
 
 namespace test_utils
 {
+	//namespace pair_size_of_test_args = std::pair<int, std::unique_ptr<const char[]>>;
 	/**
 		* \brief ������� ����������� ������.
 	*/

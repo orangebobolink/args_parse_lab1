@@ -21,7 +21,7 @@ namespace args_parse
 
 			if (longArg == item)
 			{
-				return { true, index };
+				return {index };
 			}
 
 			/// Item состоит из аргумента (в полной форме) и его значения
@@ -33,7 +33,7 @@ namespace args_parse
 			/// Item состоит из аргумента написанного в неполной форме
 			if (ParserService::checkArgumentIsWrittenInIncompleteForm(item, longArg))
 			{
-				return { true, index };
+				return {index };
 			}
 
 			index++;
@@ -70,7 +70,7 @@ namespace args_parse
 						value = item;
 
 						indexVector.push_back(index);
-						return { true, true };
+						return { true };
 					}
 
 					return { "Multiple value transmission" };
@@ -79,12 +79,12 @@ namespace args_parse
 				/// Возможно это другой аргумент 
 				auto result = findShortOperator(item, value, indexVector);
 
-				if (!result.success) return { result.error };
+				if (!result.data.has_value()) return { result.error };
 			}
 
 			indexVector.push_back(index);
 
-			return { true,true };
+			return {true };
 		}
 
 		return { "operator is invalid" };
@@ -104,14 +104,14 @@ namespace args_parse
 
 			auto result = findLongOperator(item, value);
 
-			if (!result.success) return { result.error };
+			if (!result.data.has_value()) return { result.error };
 
-			const auto index = result.data;
+			const auto index = result.data.value();
 			this->args[index]->setValue(value);
 
 			indexVector.push_back(index);
 
-			return { true, indexVector };
+			return {indexVector };
 		}
 
 		if (operatorType == OperatorType::SHORT)
@@ -121,12 +121,12 @@ namespace args_parse
 
 			auto result = findShortOperator(item, value, indexVector);
 
-			if (!result.success) return { result.error };
+			if (!result.data.has_value()) return { result.error };
 
 			const auto indexOfLastArg = indexVector[0];
 			this->args[indexOfLastArg]->setValue(value);
 
-			return { true, indexVector };
+			return {indexVector };
 		}
 
 		return { "operator is invalid" };
@@ -141,9 +141,9 @@ namespace args_parse
 			auto result = ParserService::checkIfFollowingArgvIsValue(nextElement,
 				foundOperator->getHasValue());
 
-			if (!result.success) return { result.error };
+			if (!result.data.has_value()) return { result.error };
 
-			isNextElementValue = result.data;
+			isNextElementValue = result.data.value();
 		}
 
 		if (isNextElementValue)
@@ -158,7 +158,7 @@ namespace args_parse
 			i++;
 		}
 
-		return { true, true };
+		return {true };
 	}
 
 	types::Result<bool> Parser::parse() const
@@ -173,15 +173,15 @@ namespace args_parse
 			const auto operatorType = ParserService::isOperator(strItem);
 
 			auto resultGetOperator = getOperator(strItem, operatorType);
-			if (!resultGetOperator.success) return { resultGetOperator.error };
+			if (!resultGetOperator.data.has_value()) return { resultGetOperator.error };
 
-			auto indexVector = resultGetOperator.data;
+			auto indexVector = resultGetOperator.data.value();
 
 			for (size_t i = 1; i < indexVector.size(); ++i) {
 				args::Arg* foundOperator = this->args[indexVector[i]].get();
 
 				auto resultArgumentValidity = ParserService::checkArgumentValidity(foundOperator);
-				if (!resultArgumentValidity.success) return resultArgumentValidity;
+				if (!resultArgumentValidity.data.has_value()) return resultArgumentValidity;
 
 				vectorProcesses.push_back(foundOperator);
 			}
@@ -190,10 +190,10 @@ namespace args_parse
 			const auto nextElement = argv[i + 1];
 
 			auto resultParseNextElement = parseNextElement(lastOperatorOfVector, nextElement, i);
-			if (!resultParseNextElement.success) return resultParseNextElement;
+			if (!resultParseNextElement.data.has_value()) return resultParseNextElement;
 
 			auto resultArgumentValidity = ParserService::checkArgumentValidity(lastOperatorOfVector);
-			if (!resultArgumentValidity.success) return resultArgumentValidity;
+			if (!resultArgumentValidity.data.has_value()) return resultArgumentValidity;
 
 			vectorProcesses.push_back(lastOperatorOfVector);
 		}
@@ -214,5 +214,15 @@ namespace args_parse
 		{
 			addArg(std::move(arg));
 		}
+	}
+	std::vector<args::Arg*> Parser::getArgs() const
+	{
+		std::vector<args::Arg*> argsRefs;
+		argsRefs.reserve(args.size());
+		for (const auto& argPtr : args)
+		{
+			argsRefs.push_back(argPtr.get());
+		}
+		return argsRefs;
 	}
 }

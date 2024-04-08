@@ -1,5 +1,11 @@
 #include "testUtils.hpp"
+
+#include <iostream>
 #include <multy_args/multyEmptyArg.hpp>
+#include <args/stringArg.hpp>
+#include <args/intArg.hpp>
+
+#include "args/boolArg.hpp"
 
 namespace test_utils
 {
@@ -40,39 +46,37 @@ namespace test_utils
 	{
 		args::EmptyArg help('h', "help",
 			"It's help operation",
-			[]()
+			[](args::Arg* arg)
 			{
-				std::cout << "Help" << std::endl;
-				return types::Result(true, true);
+				return types::Result<bool>(true, true);
 			});
 
 		multy_args::MultyEmptyArg version('v', "version",
 			"It's version operation",
-			[]()
+			[](args::Arg* arg)
 			{
-				std::cout << "Version" << std::endl;
-				return types::Result(true, true);
+				return types::Result<bool>(true, true);
 			}, 3);
 
 		args::StringArg output('o', "output",
 			"It's output operation",
-			[]()
+			[](args::Arg* arg)
 			{
-				return types::Result(true, true);
+				return types::Result<bool>(true, true);
 			});
 
 		args::IntArg giveMyAge('g', "giveMyAge",
 			"It has to show my age",
-			[]()
+			[](args::Arg* arg)
 			{
-				return types::Result(true, true);
+				return types::Result<bool>(true, true);
 			});
 
 		args::BoolArg isMyProgramCool('i', "isMyProgramCool",
 			"It has to show you the truth",
-			[]()
+			[](args::Arg* arg)
 			{
-				return types::Result(true, true);
+				return types::Result<bool>(true, true);
 			});
 
 		std::vector< std::unique_ptr<args::Arg>> args;

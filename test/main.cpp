@@ -2,6 +2,10 @@
 #include <catch2/catch_all.hpp>
 #include <iostream>
 
+#include "args/boolArg.hpp"
+#include "args/intArg.hpp"
+#include "args/stringArg.hpp"
+
 types::Result<bool> runParce(int argc, const char* argv[])
 {
 	auto parser = test_utils::getParser(argc, argv);
@@ -17,8 +21,10 @@ TEST_CASE("Validation", "[dummy][section]")
 
 	SECTION("Bool validation") {
 		args::BoolArg arg(' ', "", "",
-			[]()
-			{return types::Result<bool>(true, true); });
+			[](args::Arg* arg)
+			{
+				return types::Result<bool>(true, true);
+			});
 
 		REQUIRE(arg.validateValue(boolStr));
 		REQUIRE_FALSE(arg.validateValue(numberStr));
@@ -27,8 +33,10 @@ TEST_CASE("Validation", "[dummy][section]")
 
 	SECTION("Int validation") {
 		args::IntArg arg(' ', "", "",
-			[]()
-			{return types::Result<bool>(true, true); });
+			[](args::Arg* arg)
+			{
+				return types::Result<bool>(true, true);
+			});
 
 		REQUIRE(arg.validateValue(numberStr));
 		REQUIRE_FALSE(arg.validateValue(boolStr));
@@ -37,8 +45,10 @@ TEST_CASE("Validation", "[dummy][section]")
 
 	SECTION("String validation") {
 		args::StringArg arg(' ', "", "",
-			[]()
-			{return types::Result<bool>(true, true); });
+			[](args::Arg* arg)
+			{
+				return types::Result<bool>(true, true);
+			});
 
 		REQUIRE(arg.validateValue(stringStr));
 		REQUIRE(arg.validateValue(boolStr));

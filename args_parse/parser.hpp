@@ -43,5 +43,6 @@ namespace args_parse
 		types::Result<bool> parse() const;
 		void addArg(std::unique_ptr<args::Arg> arg);
 		void addArgs(std::vector<std::unique_ptr<args::Arg>> args);
+		std::vector<args::Arg*> getArgs() const;
 	};
 }

@@ -1,19 +1,17 @@
 #pragma once
 #include <string>
+#include <optional>
 
 namespace types
 {
 	template<typename T>
 	struct Result {
-		bool success;
-		T data;
+		std::optional<T> data;
 		std::string error;
 
-		Result(bool success, T data, std::string error)
-			: success(success), data(data), error(error) {}
-		Result(bool success, T data)
-			: success(success), data(data), error("") {}
-		Result(std::string)
-			: success(false), data(T()), error(error) {}
+		Result(T data)
+			: data(data) {}
+		Result(std::string error)
+			: error(move(error)) {}
 	};
 }
