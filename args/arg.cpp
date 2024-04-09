@@ -6,7 +6,7 @@ namespace args
 {
 	bool Arg::getHasValue() const
 	{
-		return hasValue;
+		return this->hasValue;
 	}
 
 	int Arg::getMaxUsageCount() const
@@ -21,7 +21,7 @@ namespace args
 
 	std::string Arg::getValue() const
 	{
-		return value;
+		return this->value;
 	}
 
 	Arg::Arg(char shortArg,
