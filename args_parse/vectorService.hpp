@@ -1,8 +1,6 @@
 #pragma once
 #include <args/arg.hpp>
 #include <vector>
-#include <tuple>
-#include <memory>
 
 namespace args_parse
 {
@@ -14,7 +12,5 @@ namespace args_parse
 	/// @attention
 	/// Если value = "", то праметра нет.
 	///
-	types::Result<bool> invokeProcesses(
-		/// Вектор процессов.
-		std::vector<args::Arg*> vector);
+	types::Result<bool> invokeProcesses(std::vector<args::Arg*> vector, args_parse::Parser* parser);
 } /* namespace args_parse */

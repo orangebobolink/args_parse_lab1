@@ -117,7 +117,7 @@ namespace args
 	class MultyEmptyArg : public args::EmptyArg
 	{
 	public:
-		MultyEmptyArg(char shortArg,
+		MultyArg(char shortArg,
 			std::string longArg,
 			std::string description,
 			types::Result<bool>(*processFunction)(),

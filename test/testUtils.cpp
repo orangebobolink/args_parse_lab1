@@ -37,12 +37,11 @@ namespace test_utils
 
 	std::vector<std::unique_ptr<args::Arg>> test_utils::getTestArgs()
 	{
-		args::EmptyArg help('h', "help",
+		args::ValueArg<void> help('h', "help",
 			"It's help operation",
-			[]()
+			[](args_parse::Parser* parser, args::Arg* arg)
 			{
-				std::cout << "Help" << std::endl;
-				return types::Result(true);
+				return types::Result<bool>(true);
 			});
 
 		args::MultyEmptyArg version('v', "version",

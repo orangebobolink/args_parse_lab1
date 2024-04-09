@@ -107,7 +107,7 @@ namespace args_parse
 			if (!result.data.has_value()) return { result.error };
 
 			const auto index = result.data.value();
-			this->args[index]->setValue(value);
+			this->args[index]->tryParse(value);
 
 			indexVector.push_back(index);
 
@@ -124,7 +124,7 @@ namespace args_parse
 			if (!result.data.has_value()) return { result.error };
 
 			const auto indexOfLastArg = indexVector[0];
-			this->args[indexOfLastArg]->setValue(value);
+			this->args[indexOfLastArg]->tryParse(value);
 
 			return { indexVector };
 		}
@@ -148,12 +148,7 @@ namespace args_parse
 
 		if (isNextElementValue)
 		{
-			if (!foundOperator->getValue().empty())
-			{
-				return { std::string("Multiple value transmission") };
-			}
-
-			foundOperator->setValue(nextElement);
+			foundOperator->tryParse(nextElement);
 
 			i++;
 		}
