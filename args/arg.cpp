@@ -46,7 +46,7 @@ namespace args
 	Arg::Arg(char shortArg,
 		std::string longArg,
 		std::string description,
-		types::Result<bool>(*process)(Arg* arg, args_parse::Parser* parser))
+		types::Result<bool>(*process)(const Arg* arg, const args_parse::Parser* parser))
 		: description(std::move(description)), shortArg(shortArg), longArg(std::move(longArg)),
 		processFunction(processFunction) {}
 
@@ -70,7 +70,7 @@ namespace args
 		return this->longArg;
 	}
 
-	types::Result<bool> Arg::process(args_parse::Parser* parser)
+	types::Result<bool> Arg::process(const args_parse::Parser* parser)
 	{
 		return this->processFunction(this, parser);
 	}
@@ -94,14 +94,14 @@ namespace args
 	}
 
 	template<typename T>
-	types::Result<bool> ValueArg<T>::process(args_parse::Parser* parser)
+	types::Result<bool> ValueArg<T>::process(const args_parse::Parser* parser)
 	{
 		std::cout << this->getShortArg() << " " << this->value << std::endl;
 		return { true };
 	}
 
 	template<typename T>
-	types::Result<bool> MultyValueArg<T>::process(args_parse::Parser* parser)
+	types::Result<bool> MultyValueArg<T>::process(const args_parse::Parser* parser)
 	{
 		std::cout << this->value << " " << this->usageCount << std::endl;
 		return { true };
@@ -111,19 +111,35 @@ namespace args
 	types::Result<bool> ValueArg<T>::tryParse(std::string& value)
 	{
 		const types::Result<bool> result = this->validator.validate(value);
-		if (!result.isOk()) return { std::exception(" ") };
+		if (!result.isOk()) return { {" "} };
 
-		this->value = value;
-
-		return { true };
+		try
+		{
+			T convertedValue = static_cast<T>(std::stol(value)); 
+			this->value = convertedValue;
+			return { true };
+		}
+		catch (const std::invalid_argument&)
+		{
+			return { false };
+		}
+		catch (const std::out_of_range&)
+		{
+			return { false };
+		}
 	}
 
 	types::Result<bool> EmptyArg::tryParse(std::string& value)
 	{
-		return {std::exception(" ")};
+		return { types::ErrorCase(" ") };
 	}
 
-	types::Result<bool> args::MultyEmptyArg::process(args_parse::Parser* parser)
+	types::Result<bool> EmptyArg::process(const args_parse::Parser* parser)
+	{
+		return Arg::process(parser);
+	}
+
+	types::Result<bool> args::MultyEmptyArg::process(const args_parse::Parser* parser)
 	{
 		std::cout << this->usageCount << std::endl;
 

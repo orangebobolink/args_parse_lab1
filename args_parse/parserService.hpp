@@ -1,7 +1,8 @@
 #pragma once
-#include <types/result.hpp>
+#include <string>
 
 #include "args/arg.hpp"
+#include "types/result.hpp"
 
 namespace args_parse
 {
@@ -27,7 +28,7 @@ namespace args_parse
 		* \param argAllowsUseValue - разрешено ли использовать значение для аргумента.
 	*/
 	types::Result<bool> checkIfFollowingArgvIsValue(const char* nextElement,
-		const bool argAllowsUseValue);
+	                                                const bool argAllowsUseValue);
 	/**
 		* \brief Определяет, состоит ли элемент из аргумента и значения.
 	*/

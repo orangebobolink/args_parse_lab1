@@ -31,7 +31,7 @@ namespace args_parse
 
 		if (nextArgIsNoteOperator && !argAllowsUseValue)
 		{
-			return { std::string("arg doesn't allow use value") };
+			return { types::ErrorCase("arg doesn't allow use value") };
 		}
 
 		const bool isNextElementValue = nextArgIsNoteOperator && argAllowsUseValue;
@@ -46,7 +46,7 @@ namespace args_parse
 	{
 		if (value != "")
 		{
-			return { "Multiple value transmission" };
+			return { {"Multiple value transmission"} };
 		}
 
 		value = item.substr(longArg.length());
@@ -85,37 +85,37 @@ namespace args_parse
 
 	types::Result<bool> checkArgumentHasValue(args::Arg* foundOperator)
 	{
-		//const bool argHaveToHaveValue = foundOperator->getHasValue() == true;
-		//const bool argHasValue = foundOperator->getValue().empty();
+		const bool argHaveToHaveValue = foundOperator->getHasValue() == true;
+		const bool argHasValue = foundOperator->getValue().empty();
 
-		//if (argHaveToHaveValue && argHasValue)
-		//{
-		//	return { std::string("Operator has to have a value") };
-		//}
+		if (argHaveToHaveValue && argHasValue)
+		{
+			return { types::ErrorCase("Operator has to have a value") };
+		}
 
 		return { true };
 	}
 
 	types::Result<bool> checkArgumentHasNotInvalidValue(args::Arg* foundOperator)
 	{
-		//const auto valueIsNotEmpty = !foundOperator->getValue().empty();
-		//const auto valueDoesNotPassValidation = !foundOperator->validateValue(foundOperator->getValue());
+		/*const auto valueIsNotEmpty = !foundOperator->getValue().empty();
+		const auto valueDoesNotPassValidation = !foundOperator->validateValue(foundOperator->getValue());
 
-		//if (valueIsNotEmpty && valueDoesNotPassValidation)
-		//{
-		//	return { std::string("Invalid value") };
-		//}
+		if (valueIsNotEmpty && valueDoesNotPassValidation)
+		{
+			return { std::string("Invalid value") };
+		}*/
 
 		return { true };
 	}
 
 	types::Result<bool> checkArgumentValidity(args::Arg* arg)
 	{
-		//auto resultHasValue = checkArgumentHasValue(arg);
-		//if (!resultHasValue.data.has_value()) return resultHasValue;
+		auto resultHasValue = checkArgumentHasValue(arg);
+		if (!resultHasValue.isOk()) return resultHasValue;
 
-		//auto resultHasNotInvalidValue = checkArgumentHasNotInvalidValue(arg);
-		//if (!resultHasNotInvalidValue.data.has_value()) return resultHasNotInvalidValue;
+		auto resultHasNotInvalidValue = checkArgumentHasNotInvalidValue(arg);
+		if (!resultHasNotInvalidValue.isOk()) return resultHasNotInvalidValue;
 
 		return { true };
 	}
