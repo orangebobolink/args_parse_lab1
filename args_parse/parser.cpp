@@ -13,6 +13,19 @@ namespace args_parse
 		this->argv = argv;
 	}
 
+	std::vector<args::Arg*> Parser::getArgs() const
+	{
+		std::vector<args::Arg*> ptr_args;
+
+		ptr_args.reserve(this->args.size());
+		for(auto& arg : this->args)
+		{
+			ptr_args.push_back(arg.get());
+		}
+
+		return ptr_args;
+	}
+
 	types::Result<int> Parser::findLongOperator(std::string& item, std::string& value) const
 	{
 		int index = 0;
@@ -63,7 +76,7 @@ namespace args_parse
 				item = item.substr(pos + LengthOfChar);
 
 				/// Если аргумент принимает значение, то item - значение
-				if (this->args[index]->getHasValue())
+				if (this->args[index]->getCanHasValue())
 				{
 					if (!item.empty())
 					{
@@ -79,7 +92,7 @@ namespace args_parse
 				/// Возможно это другой аргумент 
 				auto result = findShortOperator(item, value, indexVector);
 
-				if (!result.data.has_value()) return { result.error };
+				if (!result.isOk() || !result.data.value()) return { result.error };
 			}
 
 			indexVector.push_back(index);
@@ -121,7 +134,7 @@ namespace args_parse
 
 			auto result = findShortOperator(item, value, indexVector);
 
-			if (!result.data.has_value()) return { result.error };
+			if (!result.isOk()) return { result.error };
 
 			const auto indexOfLastArg = indexVector[0];
 			this->args[indexOfLastArg]->tryParse(value);
@@ -139,7 +152,7 @@ namespace args_parse
 		if (i + 1 < argc)
 		{
 			auto result = checkIfFollowingArgvIsValue(nextElement,
-				foundOperator->getHasValue());
+				foundOperator->getCanHasValue());
 
 			if (!result.isOk()) return { result.error };
 
@@ -148,9 +161,12 @@ namespace args_parse
 
 		if (isNextElementValue)
 		{
-			auto stringnextitem = std::string(nextElement);
-			foundOperator->tryParse(stringnextitem);
+			auto stringNextItem = std::string(nextElement);
+			auto result = foundOperator->tryParse(stringNextItem);
 
+			if (!result.isOk())
+				return { types::ErrorCase("Invalid") };
+			
 			i++;
 		}
 
@@ -169,7 +185,7 @@ namespace args_parse
 			const auto operatorType = isOperator(strItem);
 
 			auto resultGetOperator = getOperator(strItem, operatorType);
-			if (!resultGetOperator.data.has_value()) return { resultGetOperator.error };
+			if (!resultGetOperator.isOk()) return { resultGetOperator.error };
 
 			auto indexVector = resultGetOperator.data.value();
 
@@ -177,7 +193,7 @@ namespace args_parse
 				args::Arg* foundOperator = this->args[indexVector[i]].get();
 
 				auto resultArgumentValidity = checkArgumentValidity(foundOperator);
-				if (!resultArgumentValidity.data.has_value()) return resultArgumentValidity;
+				if (!resultArgumentValidity.isOk()) return resultArgumentValidity;
 
 				vectorProcesses.push_back(foundOperator);
 			}
@@ -186,10 +202,10 @@ namespace args_parse
 			const auto nextElement = argv[i + 1];
 
 			auto resultParseNextElement = parseNextElement(lastOperatorOfVector, nextElement, i);
-			if (!resultParseNextElement.data.has_value()) return resultParseNextElement;
+			if (!resultParseNextElement.isOk()) return resultParseNextElement;
 
 			auto resultArgumentValidity = checkArgumentValidity(lastOperatorOfVector);
-			if (!resultArgumentValidity.data.has_value()) return resultArgumentValidity;
+			if (!resultArgumentValidity.isOk()) return resultArgumentValidity;
 
 			vectorProcesses.push_back(lastOperatorOfVector);
 		}

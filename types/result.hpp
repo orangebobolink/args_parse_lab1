@@ -22,8 +22,26 @@ namespace types
 			: data(), error(std::move(err.description)) {}
 		Result(T data)
 			: data(data), error() {}
+
 		bool isOk() const {
 			return data.has_value();
+		}
+	};
+
+	template<>
+	struct Result<bool> {
+		std::optional<bool> data;
+		std::string error;
+		bool err = false;
+
+		Result() {}
+		Result(bool data)
+			: data(data), error() {}
+		Result(ErrorCase&& err)
+			: data(false), err(true), error(std::move(err.description)) {}
+
+		bool isOk() const {
+			return !err;
 		}
 	};
 }
