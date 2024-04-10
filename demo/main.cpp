@@ -1,4 +1,4 @@
-#include <iomanip>
+﻿#include <iomanip>
 #include <args/arg.hpp>
 #include <vector>
 #include <memory>
@@ -14,13 +14,14 @@ int main(int argc, const char** argv)
 
 	auto result = parser.parse();
 
-	if (!result.data.has_value()) std::cout << result.error << std::endl;
+	if (!result.isOk()) std::cout << result.error << std::endl;
 }
 
 args_parse::Parser getParser(const int argc, const char** argv)
 {
 	args_parse::Parser parser(argc, argv);
 	auto args = std::move(getTestArgs());
+
 
 	for (auto& arg : args)
 	{
