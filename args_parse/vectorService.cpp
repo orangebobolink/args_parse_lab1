@@ -3,7 +3,7 @@
 
 namespace args_parse
 {
-	types::Result<bool> invokeProcesses(std::vector<args::Arg*> vector, args_parse::Parser* parser)
+	types::Result<bool> invokeProcesses(std::vector<args::Arg*> vector, const args_parse::Parser* parser)
 	{
 		std::unordered_map<args::Arg*, int> typeCount;
 

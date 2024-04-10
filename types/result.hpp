@@ -7,11 +7,10 @@ namespace types
 	template<typename T>
 	struct Result {
 		std::optional<T> data;
-		std::string error;
+		std::exception error;
 
-		Result() : error("") {}
-		Result(std::string error)
-			: data(), error(std::move(error)) {}
+		Result(const std::exception& error)
+			: data(), error(error) {}
 		Result(T data)
 			: data(data), error("") {}
 

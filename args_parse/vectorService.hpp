@@ -13,5 +13,5 @@ namespace args_parse
 	/// @attention
 	/// Если value = "", то праметра нет.
 	///
-	types::Result<bool> invokeProcesses(std::vector<args::Arg*> vector, args_parse::Parser* parser);
+	types::Result<bool> invokeProcesses(std::vector<args::Arg*> vector, const args_parse::Parser* parser);
 } /* namespace args_parse */

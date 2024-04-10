@@ -4,6 +4,35 @@
 
 namespace args
 {
+	types::Result<bool> IntValidator::validate(std::string& value)
+	{
+		std::string::const_iterator it = value.begin();
+
+		while (it != value.end() && std::isdigit(*it)) ++it;
+
+		return { !value.empty() && it == value.end() };
+	}
+
+	types::Result<bool> BoolValidator::validate(std::string& value)
+	{
+		std::string lowerStr;
+
+		for (const auto elem : value)
+			lowerStr += std::tolower(elem);
+
+		return{ lowerStr == "true" || lowerStr == "false" };
+	}
+
+	types::Result<bool> StringValidator::validate(std::string& value)
+	{
+		for (const char c : value) {
+			if (!isalpha(c) && !isspace(c))
+				return {false};
+		}
+
+		return { true };
+	}
+
 	bool Arg::getHasValue() const
 	{
 		return this->hasValue;
@@ -14,29 +43,19 @@ namespace args
 		return this->maxUsageCount;
 	}
 
-	void Arg::setValue(const std::string& value)
-	{
-		this->value = value;
-	}
-
-	std::string Arg::getValue() const
-	{
-		return this->value;
-	}
-
 	Arg::Arg(char shortArg,
 		std::string longArg,
 		std::string description,
-		types::Result<bool>(*processFunction)())
-		: description(description), shortArg(shortArg), longArg(longArg),
+		types::Result<bool>(*process)(Arg* arg, args_parse::Parser* parser))
+		: description(std::move(description)), shortArg(shortArg), longArg(std::move(longArg)),
 		processFunction(processFunction) {}
 
-	std::string Arg::getDescriptiong() const
+	std::string Arg::getDescription() const
 	{
 		return this->description;
 	}
 
-	void Arg::setDescription(std::string description)
+	void Arg::setDescription(std::string& description)
 	{
 		this->description = description;
 	}
@@ -51,19 +70,9 @@ namespace args
 		return this->longArg;
 	}
 
-	types::Result<bool> Arg::process()
+	types::Result<bool> Arg::process(args_parse::Parser* parser)
 	{
-		if (!this->hasValue && this->value != "")
-		{
-			return { std::string("Value is forbidden") };
-		}
-
-		return this->processFunction();
-	}
-
-	bool Arg::validateValue(std::string value)
-	{
-		return false;
+		return this->processFunction(this, parser);
 	}
 
 	void Arg::incrementUsageCount() {
@@ -84,80 +93,40 @@ namespace args
 		return this->allowMultyValues;
 	}
 
-	bool args::EmptyArg::validateValue(std::string value)
+	template<typename T>
+	types::Result<bool> ValueArg<T>::process(args_parse::Parser* parser)
 	{
-		return true;
-	}
-
-	types::Result<bool> args::EmptyArg::process()
-	{
-		return this->args::Arg::process();
-	}
-
-	bool args::ValueArg::validateValue(std::string value)
-	{
-		return true;
-	}
-
-	types::Result<bool> args::ValueArg::process()
-	{
-		std::cout << this->getShortArg() << this->value << std::endl;
+		std::cout << this->getShortArg() << " " << this->value << std::endl;
 		return { true };
 	}
 
-	bool IntArg::validateValue(std::string value)
-	{
-		std::string::const_iterator it = value.begin();
-
-		while (it != value.end() && std::isdigit(*it)) ++it;
-
-		return !value.empty() && it == value.end();
-	}
-
-	bool StringArg::validateValue(std::string value)
-	{
-		for (const char c : value) {
-			if (!isalpha(c) && !isspace(c))
-				return false;
-		}
-
-		return true;
-	}
-
-	bool BoolArg::validateValue(std::string value)
-	{
-		std::string lowerStr = "";
-
-		for (auto elem : value)
-			lowerStr += std::tolower(elem);
-
-		return lowerStr == "true" || lowerStr == "false";
-	}
-
-	types::Result<bool> args::MultyBoolArg::process()
+	template<typename T>
+	types::Result<bool> MultyValueArg<T>::process(args_parse::Parser* parser)
 	{
 		std::cout << this->value << " " << this->usageCount << std::endl;
 		return { true };
 	}
 
-	types::Result<bool> args::MultyEmptyArg::process()
+	template <typename T>
+	types::Result<bool> ValueArg<T>::tryParse(std::string& value)
+	{
+		const types::Result<bool> result = this->validator.validate(value);
+		if (!result.isOk()) return { std::exception(" ") };
+
+		this->value = value;
+
+		return { true };
+	}
+
+	types::Result<bool> EmptyArg::tryParse(std::string& value)
+	{
+		return {std::exception(" ")};
+	}
+
+	types::Result<bool> args::MultyEmptyArg::process(args_parse::Parser* parser)
 	{
 		std::cout << this->usageCount << std::endl;
 
-		return args::EmptyArg::process();
-	}
-
-	types::Result<bool> args::MultyIntArg::process()
-	{
-		std::cout << this->value << " " << this->usageCount << std::endl;
-
-		return { true };
-	}
-
-	types::Result<bool> args::MultyStringlArg::process()
-	{
-		std::cout << this->value << " " << this->usageCount << std::endl;
-
-		return { true };
+		return args::EmptyArg::process(parser);
 	}
 }

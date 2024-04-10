@@ -39,7 +39,7 @@ namespace args_parse
 			index++;
 		}
 
-		return { "operator is invalid" };
+		return {std::exception("operator is invalid")};
 	}
 
 	types::Result<bool> Parser::findShortOperator(std::string& item, std::string& value, std::vector<int>& indexVector) const
@@ -73,7 +73,7 @@ namespace args_parse
 						return { true };
 					}
 
-					return { std::string("Multiple value transmission") };
+					return { std::exception("Multiple value transmission") };
 				}
 
 				/// Возможно это другой аргумент 
@@ -87,7 +87,7 @@ namespace args_parse
 			return { true };
 		}
 
-		return { std::string("operator is invalid") };
+		return { std::exception("operator is invalid") };
 	}
 
 	types::Result<std::vector<int>> Parser::getOperator(std::string& item, OperatorType operatorType) const
@@ -129,7 +129,7 @@ namespace args_parse
 			return { indexVector };
 		}
 
-		return { "operator is invalid" };
+		return { std::exception("operator is invalid")};
 	}
 
 	types::Result<bool> Parser::parseNextElement(args::Arg* foundOperator, const char* nextElement, int& i) const
@@ -193,7 +193,7 @@ namespace args_parse
 			vectorProcesses.push_back(lastOperatorOfVector);
 		}
 
-		auto result = invokeProcesses(vectorProcesses);
+		auto result = invokeProcesses(vectorProcesses, this);
 
 		return result;
 	}

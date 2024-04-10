@@ -6,6 +6,28 @@
 
 namespace args
 {
+	class Validator
+	{
+	public:
+		virtual ~Validator() = default;
+		virtual types::Result<bool> validate(std::string& value) = 0;
+	};
+
+	class IntValidator : public Validator
+	{
+		types::Result<bool> validate(std::string& value) override;
+	};
+
+	class BoolValidator : public Validator
+	{
+		types::Result<bool> validate(std::string& value) override;
+	};
+
+	class StringValidator : public Validator
+	{
+		types::Result<bool> validate(std::string& value) override;
+	};
+
 	class Arg
 	{
 	private:
@@ -15,7 +37,7 @@ namespace args
 		bool hasValue = false;
 		char shortArg = ' ';
 		std::string longArg = "";
-		types::Result<bool>(*processFunction)(Arg* arg, args_parse::Parser* parser);
+		types::Result<bool>(*processFunction)(Arg* arg, args_parse::Parser* parser){};
 		int usageCount = 0;
 		bool allowMultyValues = false;
 		int maxUsageCount = 1;
@@ -33,7 +55,7 @@ namespace args
 			types::Result<bool>(*process)(Arg* arg, args_parse::Parser* parser));
 
 		std::string getDescription() const;
-		void setDescription(std::string description);
+		void setDescription(std::string& description);
 		char getShortArg() const;
 		std::string getLongArg() const;
 		void incrementUsageCount();
@@ -41,24 +63,28 @@ namespace args
 		int getUsageCount() const;
 		bool getAllowMultyValues() const;
 
-		bool virtual tryParse(std::string value) = 0;
-		virtual types::Result<bool> process(args_parse::Parser* parser) = 0;
+		virtual types::Result<bool> tryParse(std::string& value) = 0;
+		virtual types::Result<bool> process(args_parse::Parser* parser);
 	};
 
-	template <typename T>
-	class ValueArg<T> : public Arg
+	template<typename T>
+	class ValueArg : public Arg
 	{
+		T value;
+		Validator* validator{};
 	public:
 		ValueArg(char shortArg,
-			std::string longArg,
-			std::string description,
-			types::Result<bool>(*process)(Arg* arg, args_parse::Parser* parser))
+		         const std::string& longArg,
+		         const std::string& description,
+				 types::Result<bool>(*process)(Arg* arg, args_parse::Parser* parser),
+				 Validator* validator)
 			: Arg(shortArg, longArg, description, process)
 		{
 			this->hasValue = true;
+			this->validator = validator;
 		}
 
-		bool tryParse(std::string value) override;
+		types::Result<bool> tryParse(std::string& value) override;
 		types::Result<bool> process(args_parse::Parser* parser) override;
 	};
 
@@ -66,24 +92,23 @@ namespace args
 	{
 	public:
 		EmptyArg(char shortArg,
-			std::string longArg,
-			std::string description,
-			types::Result<bool>(*process)(Arg* arg, args_parse::Parser* parser))
+		         const std::string& longArg,
+		         const std::string& description,
+				 types::Result<bool>(*process)(Arg* arg, args_parse::Parser* parser))
 			: Arg(shortArg, longArg, description, process)
 		{
 			this->hasValue = false;
 		}
 
-		bool tryParse(std::string value) override;
-		types::Result<bool> process(args_parse::Parser* parser) override;
+		types::Result<bool> tryParse(std::string& value) override;
 	};
 
 	class MultyEmptyArg : public EmptyArg
 	{
 	public:
 		MultyEmptyArg(char shortArg,
-			std::string longArg,
-			std::string description,
+			std::string& longArg,
+			std::string& description,
 			types::Result<bool>(*process)(Arg* arg, args_parse::Parser* parser),
 			int maxUsageCount = 3)
 			: EmptyArg(shortArg, longArg, description, process)
@@ -95,16 +120,17 @@ namespace args
 		types::Result<bool> process(args_parse::Parser* parser) override;
 	};
 
-	template <typename T>
+	template<typename T>
 	class MultyValueArg : public ValueArg<T>
 	{
 	public:
 		MultyValueArg(char shortArg,
-			std::string longArg,
-			std::string description,
+			std::string& longArg,
+			std::string& description,
 			types::Result<bool>(*process)(Arg* arg, args_parse::Parser* parser),
+			Validator* validator,
 			int maxUsageCount = 3)
-			: EmptyArg(shortArg, longArg, description, process)
+			: ValueArg<T>(shortArg, longArg, description, process, validator)
 		{
 			this->allowMultyValues = true;
 			this->maxUsageCount = maxUsageCount;
