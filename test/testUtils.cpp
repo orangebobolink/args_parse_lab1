@@ -1,9 +1,8 @@
 #include "testUtils.hpp"
-#include <multy_args/multyEmptyArg.hpp>
 
 namespace test_utils
 {
-	std::pair<int, std::unique_ptr<const char* []>> test_utils::createTestCase(const std::vector<const char*>& strings) {
+	TestStruct test_utils::createTestCase(const std::vector<const char*>& strings) {
 		int size = strings.size();
 		std::unique_ptr<const char* []> stringArray(new const char* [size]);
 
@@ -12,11 +11,11 @@ namespace test_utils
 			stringArray[i] = strings[i];
 		}
 
-		return std::make_pair(size, std::move(stringArray));
+		return { size, std::move(stringArray) };
 	}
 
-	std::vector<std::pair<int, std::unique_ptr<const char* []>>> test_utils::createTestCases(const std::vector<std::vector<const char*>>& testCasesStrings) {
-		std::vector<std::pair<int, std::unique_ptr<const char* []>>> testCases;
+	std::vector<TestStruct> test_utils::createTestCases(const std::vector<std::vector<const char*>>& testCasesStrings) {
+		std::vector<TestStruct> testCases;
 		for (const auto& testCaseStrings : testCasesStrings) {
 			testCases.push_back(createTestCase(testCaseStrings));
 		}
@@ -38,50 +37,53 @@ namespace test_utils
 
 	std::vector<std::unique_ptr<args::Arg>> test_utils::getTestArgs()
 	{
+		auto stringValidator = args::StringValidator();
+		auto intValidator = args::IntValidator();
+		auto boolValidator = args::BoolValidator();
+
+		auto s = [](const args::Arg* arg, const args_parse::Parser* parser)->types::Result<bool>
+			{
+				return { true };
+			};
 		args::EmptyArg help('h', "help",
 			"It's help operation",
-			[]()
-			{
-				std::cout << "Help" << std::endl;
-				return types::Result(true, true);
-			});
+			s);
 
-		multy_args::MultyEmptyArg version('v', "version",
-			"It's version operation",
-			[]()
+		args::ValueArg<std::string> output('o', "output",
+			"It's output operation",
+			[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
 			{
-				std::cout << "Version" << std::endl;
-				return types::Result(true, true);
+				return {true};
+			}, &stringValidator);
+
+		args::MultyEmptyArg version('v', "version",
+			"It's version operation",
+			[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
+			{
+				return {true};
 			}, 3);
 
-		args::StringArg output('o', "output",
-			"It's output operation",
-			[]()
-			{
-				return types::Result(true, true);
-			});
-
-		args::IntArg giveMyAge('g', "giveMyAge",
+		args::ValueArg<int> giveMyAge('g', "giveMyAge",
 			"It has to show my age",
-			[]()
+			[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
 			{
-				return types::Result(true, true);
-			});
+				return {true};
+			}, &intValidator);
 
-		args::BoolArg isMyProgramCool('i', "isMyProgramCool",
+		args::ValueArg<bool> isMyProgramCool('i', "isMyProgramCool",
 			"It has to show you the truth",
-			[]()
+			[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
 			{
-				return types::Result(true, true);
-			});
+				return {true};
+			}, &boolValidator);
 
 		std::vector< std::unique_ptr<args::Arg>> args;
 
 		args.push_back(std::make_unique<args::EmptyArg>(help));
-		args.push_back(std::make_unique<multy_args::MultyEmptyArg>(version));
-		args.push_back(std::make_unique<args::StringArg>(output));
-		args.push_back(std::make_unique<args::IntArg>(giveMyAge));
-		args.push_back(std::make_unique<args::BoolArg>(isMyProgramCool));
+		args.push_back(std::make_unique<args::MultyEmptyArg>(version));
+		args.push_back(std::make_unique < args::ValueArg<std::string>> (output));
+		args.push_back(std::make_unique<args::ValueArg<int>>(giveMyAge));
+		args.push_back(std::make_unique<args::ValueArg<bool>>(isMyProgramCool));
 
 		return args;
 	}

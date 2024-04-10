@@ -5,8 +5,7 @@ cmake_minimum_required(VERSION 3.28)
 project(args_parse_library LANGUAGES CXX)
 
 # Определяем библиотеку и указываем из чего она состоит.
-add_library(args_parse STATIC parser.hpp "parser.cpp" 
-vectorService.hpp "vectorService.cpp" parserService.hpp "parserService.cpp")
+add_library(args_parse STATIC parser.hpp "parser.cpp" vectorService.hpp "vectorService.cpp" parserService.hpp "parserService.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET args_parse PROPERTY CXX_STANDARD 17)

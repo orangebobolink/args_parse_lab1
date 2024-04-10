@@ -2,6 +2,7 @@
 #include "args/arg.hpp"
 #include "parserService.hpp"
 #include <vector> 
+#include <memory>
 
 namespace args_parse
 {
