@@ -45,8 +45,6 @@ namespace args
 		virtual ~Arg() = default;
 		bool getHasValue() const;
 		int getMaxUsageCount() const;
-		void setValue(const std::string& value);
-		std::string getValue() const;
 
 		Arg(char shortArg,
 			std::string longArg,

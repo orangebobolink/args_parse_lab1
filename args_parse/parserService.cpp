@@ -85,13 +85,13 @@ namespace args_parse
 
 	types::Result<bool> checkArgumentHasValue(args::Arg* foundOperator)
 	{
-		const bool argHaveToHaveValue = foundOperator->getHasValue() == true;
+		/*const bool argHaveToHaveValue = foundOperator->getHasValue() == true;
 		const bool argHasValue = foundOperator->getValue().empty();
 
 		if (argHaveToHaveValue && argHasValue)
 		{
 			return { types::ErrorCase("Operator has to have a value") };
-		}
+		}*/
 
 		return { true };
 	}
