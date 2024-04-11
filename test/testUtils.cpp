@@ -41,10 +41,12 @@ namespace test_utils
 
 	types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* parser)
 	{
+		std::cout << "--" << arg->getLongArg() << std::endl;
 		return { true };
 	}
 	types::Result<bool> defaultFunc(const args::Arg* arg, const args_parse::Parser* parser)
 	{
+		std::cout << "--" << arg->getLongArg() << std::endl;
 		return { true };
 	}
 

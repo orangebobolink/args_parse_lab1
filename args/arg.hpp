@@ -146,7 +146,7 @@ namespace args
 		}
 		types::Result<bool> process(const args_parse::Parser* parser) override
 		{
-			std::cout << this->getShortArg() << " " << this->value << std::endl;
+			std::cout << "--" << this->getLongArg() << " " << this->value << std::endl;
 			return { true };
 		}
 	};

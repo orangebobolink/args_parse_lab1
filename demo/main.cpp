@@ -1,4 +1,4 @@
-#include <iomanip>
+﻿#include <iomanip>
 #include <args/arg.hpp>
 #include <vector>
 #include <memory>
@@ -10,6 +10,10 @@
 std::vector<std::unique_ptr<args::Arg>> getTestArgs();
 args_parse::Parser getParser(const int argc, const char** argv);
 
+/**
+ * \brief Демо программы с использованием пользовательского типа
+ * При успешной работе программы выводиться длинное имя аргументо и value если оно присуствиует 
+ */
 int main(int argc, const char** argv)
 {
 	auto parser = getParser(argc, argv);
@@ -53,6 +57,7 @@ types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* par
 }
 types::Result<bool> defaultFunc(const args::Arg* arg, const args_parse::Parser* parser)
 {
+	std::cout << "--" << arg->getLongArg() << std::endl;
 	return { true };
 }
 
