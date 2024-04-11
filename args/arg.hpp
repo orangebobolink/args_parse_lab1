@@ -17,16 +17,19 @@ namespace args
 
 	class IntValidator : public Validator
 	{
+	public:
 		types::Result<bool> validate(std::string& value) override;
 	};
 
 	class BoolValidator : public Validator
 	{
+	public:
 		types::Result<bool> validate(std::string& value) override;
 	};
 
 	class StringValidator : public Validator
 	{
+	public:
 		types::Result<bool> validate(std::string& value) override;
 	};
 

@@ -15,35 +15,29 @@ TEST_CASE("Validation", "[dummy][section]")
 	std::string boolStr = "true";
 	std::string stringStr = "something";
 
-	/*SECTION("Bool validation") {
-		args::ValueArg<bool> arg(' ', "", "",
-			[]()
-			{return types::Result<bool>(true); });
+	SECTION("Bool validation") {
+		auto boolValidator = args::BoolValidator();
 
-		REQUIRE(arg.validateValue(boolStr));
-		REQUIRE_FALSE(arg.validateValue(numberStr));
-		REQUIRE_FALSE(arg.validateValue(stringStr));
+		REQUIRE(boolValidator.validate(boolStr).data.value());
+		REQUIRE_FALSE(boolValidator.validate(numberStr).data.value());
+		REQUIRE_FALSE(boolValidator.validate(stringStr).data.value());
 	}
 
 	SECTION("Int validation") {
-		args::ValueArg<int> arg(' ', "", "",
-			[]()
-			{return types::Result<bool>(true); });
+		auto intValidator = args::IntValidator();
 
-		REQUIRE(arg.validateValue(numberStr));
-		REQUIRE_FALSE(arg.validateValue(boolStr));
-		REQUIRE_FALSE(arg.validateValue(stringStr));
+		REQUIRE(intValidator.validate(numberStr).data.value());
+		REQUIRE_FALSE(intValidator.validate(boolStr).data.value());
+		REQUIRE_FALSE(intValidator.validate(stringStr).data.value());
 	}
 
 	SECTION("String validation") {
-		args::StringArg arg(' ', "", "",
-			[]()
-			{return types::Result<bool>(true); });
+		auto stringValidator = args::StringValidator();
 
-		REQUIRE(arg.validateValue(stringStr));
-		REQUIRE(arg.validateValue(boolStr));
-		REQUIRE_FALSE(arg.validateValue(numberStr));
-	}*/
+		REQUIRE(stringValidator.validate(stringStr).data.value());
+		REQUIRE(stringValidator.validate(boolStr).data.value());
+		REQUIRE_FALSE(stringValidator.validate(numberStr).data.value());
+	}
 }
 
 TEST_CASE("Parser positive", "[dummy][section]")
