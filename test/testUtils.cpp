@@ -35,47 +35,40 @@ namespace test_utils
 		return parser;
 	}
 
+	auto stringValidator = args::StringValidator();
+	auto intValidator = args::IntValidator();
+	auto boolValidator = args::BoolValidator();
+
+	types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* parser)
+	{
+		return { true };
+	}
+	types::Result<bool> defaultFunc(const args::Arg* arg, const args_parse::Parser* parser)
+	{
+		return { true };
+	}
+
 	std::vector<std::unique_ptr<args::Arg>> test_utils::getTestArgs()
 	{
-		auto stringValidator = args::StringValidator();
-		auto intValidator = args::IntValidator();
-		auto boolValidator = args::BoolValidator();
-
-		auto s = [](const args::Arg* arg, const args_parse::Parser* parser)->types::Result<bool>
-			{
-				return { true };
-			};
 		args::EmptyArg help('h', "help",
 			"It's help operation",
-			s);
+			helpFunc);
 
 		args::ValueArg<std::string> output('o', "output",
 			"It's output operation",
-			[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
-			{
-				return {true};
-			}, &stringValidator);
+			defaultFunc, &stringValidator);
 
 		args::MultyEmptyArg version('v', "version",
 			"It's version operation",
-			[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
-			{
-				return {true};
-			}, 3);
+			defaultFunc, 3);
 
 		args::ValueArg<int> giveMyAge('g', "giveMyAge",
 			"It has to show my age",
-			[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
-			{
-				return {true};
-			}, &intValidator);
+			defaultFunc, &intValidator);
 
 		args::ValueArg<bool> isMyProgramCool('i', "isMyProgramCool",
 			"It has to show you the truth",
-			[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
-			{
-				return {true};
-			}, &boolValidator);
+			defaultFunc, &boolValidator);
 
 		std::vector< std::unique_ptr<args::Arg>> args;
 

@@ -85,25 +85,17 @@ namespace args_parse
 
 	types::Result<bool> checkArgumentHasValue(args::Arg* foundOperator)
 	{
-		/*const bool argHaveToHaveValue = foundOperator->getHasValue() == true;
-		const bool argHasValue = foundOperator->getValue().empty();
+		const bool argHaveToHaveValue = foundOperator->getCanHasValue() == true;
+		const bool argHasValue = foundOperator->getHasValue() == true;
 
-		if (argHaveToHaveValue && argHasValue)
+		if (argHaveToHaveValue && !argHasValue)
 		{
 			return { types::ErrorCase("Operator has to have a value") };
-		}*/
+		}
 
-		return { true };
-	}
-
-	types::Result<bool> checkArgumentHasNotInvalidValue(args::Arg* foundOperator)
-	{
-		/*const auto valueIsNotEmpty = !foundOperator->getValue().empty();
-		const auto valueDoesNotPassValidation = !foundOperator->validateValue(foundOperator->getValue());
-
-		if (valueIsNotEmpty && valueDoesNotPassValidation)
+		/*if (!argHaveToHaveValue && argHasValue)
 		{
-			return { std::string("Invalid value") };
+			return { types::ErrorCase("Operator has to have a value") };
 		}*/
 
 		return { true };
@@ -113,9 +105,6 @@ namespace args_parse
 	{
 		auto resultHasValue = checkArgumentHasValue(arg);
 		if (!resultHasValue.isOk()) return resultHasValue;
-
-		auto resultHasNotInvalidValue = checkArgumentHasNotInvalidValue(arg);
-		if (!resultHasNotInvalidValue.isOk()) return resultHasNotInvalidValue;
 
 		return { true };
 	}

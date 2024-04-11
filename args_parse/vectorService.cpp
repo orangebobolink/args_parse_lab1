@@ -8,22 +8,22 @@ namespace args_parse
 		std::unordered_map<args::Arg*, int> typeCount;
 
 		for (auto& arg : vector) {
-
+			arg->incrementUsageCount();
 			typeCount[arg]++;
 		}
 
 		for (auto& arg : typeCount)
 		{
-			/*if (arg.first->getUsageCount() > 1 && !arg.first->getAllowMultyValues())
+			if (arg.first->getUsageCount() > 1 && !arg.first->getAllowMultyValues())
 			{
-				return { std::string("Forbiddent mylty arg for this argument") };
+				return { types::ErrorCase("Forbiddent mylty arg for this argument") };
 			}
 
 			if (arg.first->getAllowMultyValues()
 				&& arg.first->getUsageCount() > arg.first->getMaxUsageCount())
 			{
-				return { std::string("Exceeded maximum allowed usage count for this argument") };
-			}*/
+				return { types::ErrorCase("Exceeded maximum allowed usage count for this argument") };
+			}
 
 			auto result = arg.first->process(parser);
 

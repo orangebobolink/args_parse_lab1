@@ -38,6 +38,11 @@ namespace args
 		return this->hasValue;
 	}
 
+	bool Arg::getCanHasValue() const
+	{
+		return this->canHasValue;
+	}
+
 	int Arg::getMaxUsageCount() const
 	{
 		return this->maxUsageCount;
@@ -48,7 +53,7 @@ namespace args
 		std::string description,
 		types::Result<bool>(*process)(const Arg* arg, const args_parse::Parser* parser))
 		: description(std::move(description)), shortArg(shortArg), longArg(std::move(longArg)),
-		processFunction(processFunction) {}
+		processFunction(process) {}
 
 	std::string Arg::getDescription() const
 	{
@@ -91,42 +96,6 @@ namespace args
 	bool Arg::getAllowMultyValues() const
 	{
 		return this->allowMultyValues;
-	}
-
-	template<typename T>
-	types::Result<bool> ValueArg<T>::process(const args_parse::Parser* parser)
-	{
-		std::cout << this->getShortArg() << " " << this->value << std::endl;
-		return { true };
-	}
-
-	template<typename T>
-	types::Result<bool> MultyValueArg<T>::process(const args_parse::Parser* parser)
-	{
-		std::cout << this->value << " " << this->usageCount << std::endl;
-		return { true };
-	}
-
-	template <typename T>
-	types::Result<bool> ValueArg<T>::tryParse(std::string& value)
-	{
-		const types::Result<bool> result = this->validator.validate(value);
-		if (!result.isOk()) return { {" "} };
-
-		try
-		{
-			T convertedValue = static_cast<T>(std::stol(value)); 
-			this->value = convertedValue;
-			return { true };
-		}
-		catch (const std::invalid_argument&)
-		{
-			return { false };
-		}
-		catch (const std::out_of_range&)
-		{
-			return { false };
-		}
 	}
 
 	types::Result<bool> EmptyArg::tryParse(std::string& value)

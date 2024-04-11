@@ -1,8 +1,11 @@
+#include <iomanip>
 #include <args/arg.hpp>
 #include <vector>
 #include <memory>
 #include <args_parse/parser.hpp>
 #include <iostream>
+
+#include "userDemoArg.hpp"
 
 std::vector<std::unique_ptr<args::Arg>> getTestArgs();
 args_parse::Parser getParser(const int argc, const char** argv);
@@ -13,13 +16,14 @@ int main(int argc, const char** argv)
 
 	auto result = parser.parse();
 
-	if (!result.data.has_value()) std::cout << result.error << std::endl;
+	if (!result.isOk()) std::cout << result.error << std::endl;
 }
 
 args_parse::Parser getParser(const int argc, const char** argv)
 {
 	args_parse::Parser parser(argc, argv);
 	auto args = std::move(getTestArgs());
+
 
 	for (auto& arg : args)
 	{
@@ -30,47 +34,53 @@ args_parse::Parser getParser(const int argc, const char** argv)
 }
 
 
+auto stringValidator = args::StringValidator();
+auto intValidator = args::IntValidator();
+auto boolValidator = args::BoolValidator();
+auto ipValidator = IpValidator();
+
+types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* parser)
+{
+	auto args = parser->getArgs();
+
+	for(auto& arg : args)
+	{
+		std::cout << "--" << arg->getLongArg() << std::setw(50) << arg->getDescription() << std::endl;
+		std::cout << "-" << arg->getShortArg() << std::endl;
+	}
+
+	return { true };
+}
+types::Result<bool> defaultFunc(const args::Arg* arg, const args_parse::Parser* parser)
+{
+	return { true };
+}
+
 std::vector<std::unique_ptr<args::Arg>> getTestArgs()
 {
-	auto stringValidator = args::StringValidator();
-	auto intValidator = args::IntValidator();
-	auto boolValidator = args::BoolValidator();
-
-	auto s = [](const args::Arg* arg, const args_parse::Parser* parser)->types::Result<bool>
-		{
-			return { true };
-		};
 	args::EmptyArg help('h', "help",
 		"It's help operation",
-		s);
+		helpFunc);
 
 	args::ValueArg<std::string> output('o', "output",
 		"It's output operation",
-		[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
-		{
-			return {true};
-		}, &stringValidator);
+		defaultFunc, &stringValidator);
 
 	args::MultyEmptyArg version('v', "version",
 		"It's version operation",
-		[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
-		{
-			return {true};
-		}, 3);
+		defaultFunc, 3);
 
 	args::ValueArg<int> giveMyAge('g', "giveMyAge",
 		"It has to show my age",
-		[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
-		{
-			return {true};
-		}, &intValidator);
+		defaultFunc, &intValidator);
 
 	args::ValueArg<bool> isMyProgramCool('i', "isMyProgramCool",
 		"It has to show you the truth",
-		[](const args::Arg* arg, const args_parse::Parser* parser) -> types::Result<bool>
-		{
-			return {true};
-		}, &boolValidator);
+		defaultFunc, &boolValidator);
+
+	IpArg ip('n', "network",
+		"That's my ip",
+		defaultFunc, &ipValidator);
 
 	std::vector< std::unique_ptr<args::Arg>> args;
 
@@ -79,6 +89,7 @@ std::vector<std::unique_ptr<args::Arg>> getTestArgs()
 	args.push_back(std::make_unique < args::ValueArg<std::string>>(output));
 	args.push_back(std::make_unique<args::ValueArg<int>>(giveMyAge));
 	args.push_back(std::make_unique<args::ValueArg<bool>>(isMyProgramCool));
+	args.push_back(std::make_unique<IpArg>(ip));
 
 	return args;
 }

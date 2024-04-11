@@ -41,6 +41,7 @@ namespace args_parse
 		Parser(int argc,
 			const char** argv);
 
+		std::vector<args::Arg*> getArgs() const;
 		types::Result<bool> parse() const;
 		void addArg(std::unique_ptr<args::Arg> arg);
 		void addArgs(std::vector<std::unique_ptr<args::Arg>> args);
