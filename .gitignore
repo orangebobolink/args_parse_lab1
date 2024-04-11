@@ -30,6 +30,8 @@
 *.exe
 *.out
 *.app
+*.user
+*.vscode
 
 /out
 /cmake_build*
