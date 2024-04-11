@@ -14,19 +14,19 @@ namespace test_utils
 			: size(size), arguments(move(arguments)) {}
 	};
 	/**
-		* \brief ������� ����������� ������.
+		* \brief Выдает экземпляр парсера для тестов
 	*/
 	args_parse::Parser getParser(const int argc, const char** argv);
 	/**
-		* \brief ������� �������� ����� ����������.
+		* \brief Выдает экземпляр аргументов для тестов
 	*/
 	std::vector<std::unique_ptr<args::Arg>> getTestArgs();
 	/**
-		* \brief ������� �������� ������.
+		* \brief Задаем тестовые данные консоли
 	*/
 	TestStruct createTestCase(const std::vector<const char*>& strings);
 	/**
-		* \brief ������� ����� �������� �������.
+		* \brief Задаем несколько тестовые данные консоли
 	*/
 	std::vector<TestStruct> createTestCases(const std::vector<std::vector<const char*>>& testCasesStrings);
 }

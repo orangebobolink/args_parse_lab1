@@ -1,9 +1,11 @@
-﻿#include <iomanip>
+#include <iomanip>
 #include <args/arg.hpp>
 #include <vector>
 #include <memory>
 #include <args_parse/parser.hpp>
 #include <iostream>
+
+#include "userDemoArg.hpp"
 
 std::vector<std::unique_ptr<args::Arg>> getTestArgs();
 args_parse::Parser getParser(const int argc, const char** argv);
@@ -35,6 +37,7 @@ args_parse::Parser getParser(const int argc, const char** argv)
 auto stringValidator = args::StringValidator();
 auto intValidator = args::IntValidator();
 auto boolValidator = args::BoolValidator();
+auto ipValidator = IpValidator();
 
 types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* parser)
 {
@@ -75,6 +78,10 @@ std::vector<std::unique_ptr<args::Arg>> getTestArgs()
 		"It has to show you the truth",
 		defaultFunc, &boolValidator);
 
+	IpArg ip('n', "network",
+		"That's my ip",
+		defaultFunc, &ipValidator);
+
 	std::vector< std::unique_ptr<args::Arg>> args;
 
 	args.push_back(std::make_unique<args::EmptyArg>(help));
@@ -82,6 +89,7 @@ std::vector<std::unique_ptr<args::Arg>> getTestArgs()
 	args.push_back(std::make_unique < args::ValueArg<std::string>>(output));
 	args.push_back(std::make_unique<args::ValueArg<int>>(giveMyAge));
 	args.push_back(std::make_unique<args::ValueArg<bool>>(isMyProgramCool));
+	args.push_back(std::make_unique<IpArg>(ip));
 
 	return args;
 }
