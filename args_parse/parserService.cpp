@@ -93,10 +93,10 @@ namespace args_parse
 			return { types::ErrorCase("Operator has to have a value") };
 		}
 
-		/*if (!argHaveToHaveValue && argHasValue)
+		if (!argHaveToHaveValue && argHasValue)
 		{
 			return { types::ErrorCase("Operator has to have a value") };
-		}*/
+		}
 
 		return { true };
 	}

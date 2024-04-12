@@ -25,6 +25,11 @@ namespace args
 
 	types::Result<bool> StringValidator::validate(std::string& value)
 	{
+		if(value.empty())
+		{
+			return { false };
+		}
+
 		for (const char c : value) {
 			if (!isalpha(c) && !isspace(c))
 				return {false};

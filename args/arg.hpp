@@ -108,6 +108,7 @@ namespace args
 	template<typename T>
 	class ValueArg : public Arg
 	{
+	protected:
 		T value;
 		Validator* validator{};
 	public:

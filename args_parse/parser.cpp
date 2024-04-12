@@ -120,7 +120,8 @@ namespace args_parse
 			if (!result.data.has_value()) return { result.error };
 
 			const auto index = result.data.value();
-			this->args[index]->tryParse(value);
+			auto resultParse = this->args[index]->tryParse(value);
+			if (!resultParse.data.value()) return { types::ErrorCase("something") };
 
 			indexVector.push_back(index);
 
@@ -137,7 +138,8 @@ namespace args_parse
 			if (!result.isOk()) return { result.error };
 
 			const auto indexOfLastArg = indexVector[0];
-			this->args[indexOfLastArg]->tryParse(value);
+			auto resultParse = this->args[indexOfLastArg]->tryParse(value);
+			if (!resultParse.data.value()) return { types::ErrorCase("something") };
 
 			return { indexVector };
 		}
