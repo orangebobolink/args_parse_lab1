@@ -139,7 +139,7 @@ namespace args_parse
 
 			const auto indexOfLastArg = indexVector[0];
 			auto resultParse = this->args[indexOfLastArg]->tryParse(value);
-			if (!resultParse.data.value()) return { types::ErrorCase("something") };
+			if (!resultParse.isOk()) return { types::ErrorCase("something") };
 
 			return { indexVector };
 		}

@@ -126,7 +126,7 @@ namespace args
 		types::Result<bool> tryParse(std::string& value) override
 		{
 			const types::Result<bool> result = this->validator->validate(value);
-			if (!result.data.value()) 
+			if (!result.isOk()) 
 				return { types::ErrorCase("Something went wrong")};
 
 			try
