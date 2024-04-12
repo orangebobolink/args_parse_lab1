@@ -34,6 +34,7 @@ add_subdirectory ("types")
 add_subdirectory ("args")
 add_subdirectory ("args_parse")
 add_subdirectory ("demo")
+add_subdirectory ("folderparser")
 
 include(CTest)
 include(Catch)
