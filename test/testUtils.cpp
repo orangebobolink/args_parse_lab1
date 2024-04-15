@@ -2,7 +2,7 @@
 
 namespace test_utils
 {
-	TestStruct test_utils::createTestCase(const std::vector<const char*>& strings) {
+	TestStruct createTestCase(const std::vector<const char*>& strings) {
 		int size = strings.size();
 		std::unique_ptr<const char* []> stringArray(new const char* [size]);
 
@@ -14,7 +14,7 @@ namespace test_utils
 		return { size, std::move(stringArray) };
 	}
 
-	std::vector<TestStruct> test_utils::createTestCases(const std::vector<std::vector<const char*>>& testCasesStrings) {
+	std::vector<TestStruct> createTestCases(const std::vector<std::vector<const char*>>& testCasesStrings) {
 		std::vector<TestStruct> testCases;
 		for (const auto& testCaseStrings : testCasesStrings) {
 			testCases.push_back(createTestCase(testCaseStrings));
@@ -22,7 +22,7 @@ namespace test_utils
 		return std::move(testCases);
 	}
 
-	args_parse::Parser test_utils::getParser(const int argc, const char** argv)
+	args_parse::Parser getParser(const int argc, const char** argv)
 	{
 		args_parse::Parser parser(argc, argv);
 		auto args = std::move(getTestArgs());
@@ -35,9 +35,9 @@ namespace test_utils
 		return parser;
 	}
 
-	auto stringValidator = args::StringValidator();
-	auto intValidator = args::IntValidator();
-	auto boolValidator = args::BoolValidator();
+	auto stringValidator = args::Validator<std::string>();
+	auto intValidator = args::Validator<int>();
+	auto boolValidator = args::Validator<bool>();
 
 	types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* parser)
 	{

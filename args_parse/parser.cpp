@@ -8,10 +8,8 @@ namespace args_parse
 	constexpr int StartingStringPosition = 0;
 
 	Parser::Parser(int argc, const char** argv)
-	{
-		this->argc = argc;
-		this->argv = argv;
-	}
+		: argc(argc), argv(argv)
+	{ }
 
 	std::vector<args::Arg*> Parser::getArgs() const
 	{

@@ -24,7 +24,7 @@ namespace args_parse
 	{
 		bool nextArgIsNoteOperator = false;
 
-		if (nextElement != NULL)
+		if (nextElement != nullptr)
 		{
 			nextArgIsNoteOperator = isOperator(nextElement) == OperatorType::NOPE;
 		}

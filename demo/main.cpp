@@ -37,10 +37,9 @@ args_parse::Parser getParser(const int argc, const char** argv)
 	return parser;
 }
 
-
-auto stringValidator = args::StringValidator();
-auto intValidator = args::IntValidator();
-auto boolValidator = args::BoolValidator();
+auto stringValidator = args::Validator<std::string>();
+auto intValidator = args::Validator<int>();
+auto boolValidator = args::Validator<bool>();
 auto ipValidator = IpValidator();
 
 types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* parser)
@@ -63,38 +62,26 @@ types::Result<bool> defaultFunc(const args::Arg* arg, const args_parse::Parser* 
 
 std::vector<std::unique_ptr<args::Arg>> getTestArgs()
 {
-	args::EmptyArg help('h', "help",
-		"It's help operation",
-		helpFunc);
-
-	args::ValueArg<std::string> output('o', "output",
-		"It's output operation",
-		defaultFunc, &stringValidator);
-
-	args::MultyEmptyArg version('v', "version",
-		"It's version operation",
-		defaultFunc, 3);
-
-	args::ValueArg<int> giveMyAge('g', "giveMyAge",
-		"It has to show my age",
-		defaultFunc, &intValidator);
-
-	args::ValueArg<bool> isMyProgramCool('i', "isMyProgramCool",
-		"It has to show you the truth",
-		defaultFunc, &boolValidator);
-
-	IpArg ip('n', "network",
-		"That's my ip",
-		defaultFunc, &ipValidator);
-
 	std::vector< std::unique_ptr<args::Arg>> args;
 
-	args.push_back(std::make_unique<args::EmptyArg>(help));
-	args.push_back(std::make_unique<args::MultyEmptyArg>(version));
-	args.push_back(std::make_unique < args::ValueArg<std::string>>(output));
-	args.push_back(std::make_unique<args::ValueArg<int>>(giveMyAge));
-	args.push_back(std::make_unique<args::ValueArg<bool>>(isMyProgramCool));
-	args.push_back(std::make_unique<IpArg>(ip));
+	args.push_back(std::make_unique<args::EmptyArg>('h', "help",
+		"It's help operation",
+		helpFunc));
+	args.push_back(std::make_unique<args::MultyEmptyArg>('v', "version",
+		"It's version operation",
+		defaultFunc, 3));
+	args.push_back(std::make_unique<args::ValueArg<std::string>>('o', "output",
+		"It's output operation",
+		defaultFunc, &stringValidator));
+	args.push_back(std::make_unique<args::ValueArg<int>>('g', "giveMyAge",
+		"It has to show my age",
+		defaultFunc, &intValidator));
+	args.push_back(std::make_unique<args::ValueArg<bool>>('i', "isMyProgramCool",
+		"It has to show you the truth",
+		defaultFunc, &boolValidator));
+	args.push_back(std::make_unique<IpArg>('n', "network",
+		"That's my ip",
+		defaultFunc, &ipValidator));
 
 	return args;
 }
