@@ -16,16 +16,21 @@ public:
     CatalogTask(ThreadPool& pool, Catalog* catalog)
 	: Task(pool), _catalog(catalog) {}
     void execute() override {
+        if (!std::filesystem::exists(_catalog->path)) {
+            return;
+        }
+
         /// Устанавливаем id потока 
         _catalog->threadId = std::this_thread::get_id();
 
         std::filesystem::path path(_catalog->path);
         std::filesystem::directory_iterator end_itr;
-
         for (std::filesystem::directory_iterator itr(path); itr != end_itr; ++itr) {
             /// Это каталог
             if (itr->is_directory()) {
-                Catalog* catalog = new Catalog(itr->path().string(), itr->path().filename().string());
+                Catalog* catalog = new Catalog(
+                    itr->path().string(),
+                    itr->path().filename().string());
                 _catalog->content->catalogs.push_back(catalog);
 
                 pool.enqueue(new CatalogTask(pool, catalog));
@@ -52,7 +57,7 @@ int main(int argc, const char** argv)
 
     if (!result.isOk()) std::cout << result.error << std::endl;
 
-    if(path == "")
+    if(path.empty())
     {
         std::cout << "Ведите путь" << std::endl;
         return 0;
@@ -99,7 +104,6 @@ types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* par
 
     return { true };
 }
- 
 
 types::Result<bool> pathFunc(const args::Arg* arg, const args_parse::Parser* parser)
 {
