@@ -123,6 +123,7 @@ namespace args
 			this->validator = validator;
 		}
 
+		T getValue() const { return value; }
 		types::Result<bool> tryParse(std::string& value) override
 		{
 			const types::Result<bool> result = this->validator->validate(value);
@@ -136,19 +137,10 @@ namespace args
 				this->hasValue = true;
 				return { true };
 			}
-			catch (const std::invalid_argument&)
+			catch (const std::exception& ex)
 			{
-				return { false };
+				return { types::ErrorCase(ex.what()) };
 			}
-			catch (const std::out_of_range&)
-			{
-				return { false };
-			}
-		}
-		types::Result<bool> process(const args_parse::Parser* parser) override
-		{
-			std::cout << "--" << this->getLongArg() << " " << this->value << std::endl;
-			return { true };
 		}
 	};
 

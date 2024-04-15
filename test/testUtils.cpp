@@ -2,7 +2,7 @@
 
 namespace test_utils
 {
-	TestStruct test_utils::createTestCase(const std::vector<const char*>& strings) {
+	TestStruct createTestCase(const std::vector<const char*>& strings) {
 		int size = strings.size();
 		std::unique_ptr<const char* []> stringArray(new const char* [size]);
 
@@ -14,15 +14,16 @@ namespace test_utils
 		return { size, std::move(stringArray) };
 	}
 
-	std::vector<TestStruct> test_utils::createTestCases(const std::vector<std::vector<const char*>>& testCasesStrings) {
+	std::vector<TestStruct> createTestCases(const std::vector<std::vector<const char*>>& testCasesStrings) {
 		std::vector<TestStruct> testCases;
+		testCases.reserve(testCasesStrings.size());
 		for (const auto& testCaseStrings : testCasesStrings) {
 			testCases.push_back(createTestCase(testCaseStrings));
 		}
-		return std::move(testCases);
+		return testCases;
 	}
 
-	args_parse::Parser test_utils::getParser(const int argc, const char** argv)
+	args_parse::Parser getParser(const int argc, const char** argv)
 	{
 		args_parse::Parser parser(argc, argv);
 		auto args = std::move(getTestArgs());
