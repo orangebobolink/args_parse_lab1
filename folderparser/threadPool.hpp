@@ -7,7 +7,6 @@
 
 class ThreadPool;
 
-
 /**
  * \brief Абстрактный класс для задач
  */

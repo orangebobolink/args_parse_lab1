@@ -8,29 +8,36 @@
 
 namespace args
 {
+	template<typename T>
 	class Validator
 	{
 	public:
 		virtual ~Validator() = default;
-		virtual types::Result<bool> validate(std::string& value) = 0;
+		virtual types::Result<bool> validate(std::string& value);
 	};
 
-	class IntValidator : public Validator
+	template<>
+	class Validator<int>
 	{
 	public:
-		types::Result<bool> validate(std::string& value) override;
+		virtual ~Validator() = default;
+		virtual types::Result<bool> validate(std::string& value);
 	};
 
-	class BoolValidator : public Validator
+	template<>
+	class Validator<bool>
 	{
 	public:
-		types::Result<bool> validate(std::string& value) override;
+		virtual ~Validator() = default;
+		virtual types::Result<bool> validate(std::string& value);
 	};
 
-	class StringValidator : public Validator
+	template<>
+	class Validator<std::string>
 	{
 	public:
-		types::Result<bool> validate(std::string& value) override;
+		virtual ~Validator() = default;
+		virtual types::Result<bool> validate(std::string& value);
 	};
 
 	class Arg
@@ -110,13 +117,13 @@ namespace args
 	{
 	protected:
 		T value;
-		Validator* validator{};
+		Validator<T>* validator{};
 	public:
 		ValueArg(char shortArg,
 			const std::string& longArg,
 			const std::string& description,
 			types::Result<bool>(*process)(const Arg* arg, const args_parse::Parser* parser),
-			Validator* validator)
+			Validator<T>* validator)
 			: Arg(shortArg, longArg, description, process)
 		{
 			this->canHasValue = true;
@@ -152,7 +159,7 @@ namespace args
 			std::string& longArg,
 			std::string& description,
 			types::Result<bool>(*process)(const Arg* arg, const args_parse::Parser* parser),
-			Validator* validator,
+			Validator<T>* validator,
 			int maxUsageCount = 3)
 			: ValueArg<T>(shortArg, longArg, description, process, validator)
 		{

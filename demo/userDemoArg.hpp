@@ -4,7 +4,7 @@
 /**
  * \brief Пример создания пользовательского валидатора
  */
-class IpValidator : public args::Validator
+class IpValidator : public args::Validator<std::string>	
 {
 	types::Result<bool> validate(std::string& value) override;
 };
@@ -19,7 +19,7 @@ public:
 		const std::string& longArg,
 		const std::string& description,
 		types::Result<bool>(*process)(const Arg* arg, const args_parse::Parser* parser),
-		args::Validator* validator)
+		args::Validator<std::string>* validator)
 		: ValueArg<std::string>(shortArg, longArg, description, process, validator)
-		{	}
+		{}
 };

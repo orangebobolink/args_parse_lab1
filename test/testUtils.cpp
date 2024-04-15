@@ -16,11 +16,10 @@ namespace test_utils
 
 	std::vector<TestStruct> createTestCases(const std::vector<std::vector<const char*>>& testCasesStrings) {
 		std::vector<TestStruct> testCases;
-		testCases.reserve(testCasesStrings.size());
 		for (const auto& testCaseStrings : testCasesStrings) {
 			testCases.push_back(createTestCase(testCaseStrings));
 		}
-		return testCases;
+		return std::move(testCases);
 	}
 
 	args_parse::Parser getParser(const int argc, const char** argv)
@@ -36,9 +35,9 @@ namespace test_utils
 		return parser;
 	}
 
-	auto stringValidator = args::StringValidator();
-	auto intValidator = args::IntValidator();
-	auto boolValidator = args::BoolValidator();
+	auto stringValidator = args::Validator<std::string>();
+	auto intValidator = args::Validator<int>();
+	auto boolValidator = args::Validator<bool>();
 
 	types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* parser)
 	{

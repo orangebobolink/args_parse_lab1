@@ -37,9 +37,9 @@ args_parse::Parser getParser(const int argc, const char** argv)
 	return parser;
 }
 
-auto stringValidator = args::StringValidator();
-auto intValidator = args::IntValidator();
-auto boolValidator = args::BoolValidator();
+auto stringValidator = args::Validator<std::string>();
+auto intValidator = args::Validator<int>();
+auto boolValidator = args::Validator<bool>();
 auto ipValidator = IpValidator();
 
 types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* parser)

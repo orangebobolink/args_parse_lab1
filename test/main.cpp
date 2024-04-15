@@ -16,7 +16,7 @@ TEST_CASE("Validation", "[dummy][section]")
 	std::string stringStr = "something";
 
 	SECTION("Bool validation") {
-		auto boolValidator = args::BoolValidator();
+		auto boolValidator = args::Validator<bool>();
 
 		REQUIRE(boolValidator.validate(boolStr).data.value());
 		REQUIRE_FALSE(boolValidator.validate(numberStr).data.value());
@@ -24,7 +24,7 @@ TEST_CASE("Validation", "[dummy][section]")
 	}
 
 	SECTION("Int validation") {
-		auto intValidator = args::IntValidator();
+		auto intValidator = args::Validator<int>();
 
 		REQUIRE(intValidator.validate(numberStr).data.value());
 		REQUIRE_FALSE(intValidator.validate(boolStr).data.value());
@@ -32,7 +32,7 @@ TEST_CASE("Validation", "[dummy][section]")
 	}
 
 	SECTION("String validation") {
-		auto stringValidator = args::StringValidator();
+		auto stringValidator = args::Validator<std::string>();
 
 		REQUIRE(stringValidator.validate(stringStr).data.value());
 		REQUIRE(stringValidator.validate(boolStr).data.value());

@@ -1,4 +1,4 @@
-#include <filesystem>
+﻿#include <filesystem>
 #include <iostream>
 
 #include "catalogTree.hpp"
@@ -16,10 +16,14 @@ public:
     CatalogTask(ThreadPool& pool, Catalog* catalog)
 	: Task(pool), _catalog(catalog) {}
     void execute() override {
+        /// Устанавливаем id потока 
         _catalog->threadId = std::this_thread::get_id();
+
         std::filesystem::path path(_catalog->path);
         std::filesystem::directory_iterator end_itr;
+
         for (std::filesystem::directory_iterator itr(path); itr != end_itr; ++itr) {
+            /// Это каталог
             if (itr->is_directory()) {
                 Catalog* catalog = new Catalog(itr->path().string(), itr->path().filename().string());
                 _catalog->content->catalogs.push_back(catalog);
@@ -27,6 +31,7 @@ public:
                 pool.enqueue(new CatalogTask(pool, catalog));
             }
             else {
+                /// Это файл
                 File* file = new File;
                 file->path = itr->path().parent_path().string();
                 file->name = itr->path().filename().string();
@@ -37,8 +42,8 @@ public:
 };
 
 std::string path;
-int threadCount;
-int sleepTime;
+int threadCount = 1;
+int sleepTime = 1;
 
 int main(int argc, const char** argv)
 {
@@ -47,13 +52,21 @@ int main(int argc, const char** argv)
 
     if (!result.isOk()) std::cout << result.error << std::endl;
 
-    // "D:\\Projects\\args_parse_lab1\\testpool"
+    if(path == "")
+    {
+        std::cout << "Ведите путь" << std::endl;
+        return 0;
+    }
+
     Catalog* catalog = new Catalog(path);
     CatalogTree tree(catalog);
 	ThreadPool threadPool(threadCount);
+
     threadPool.enqueue(new CatalogTask(threadPool, tree.getCatalog()));
+
     std::this_thread::sleep_for(std::chrono::seconds(sleepTime));
     tree.print();
+
     return 0;
 }
 
@@ -70,9 +83,9 @@ args_parse::Parser getParser(const int argc, const char** argv)
     return parser;
 }
 
-auto stringValidator = args::StringValidator();
-auto intValidator = args::IntValidator();
-auto boolValidator = args::BoolValidator();
+auto stringValidator = args::Validator<std::string>();
+auto intValidator = args::Validator<int>();
+auto boolValidator = args::Validator<bool>();
 
 types::Result<bool> helpFunc(const args::Arg* arg, const args_parse::Parser* parser)
 {

@@ -1,10 +1,15 @@
 #include "arg.hpp"
-#include <stdexcept>
 #include <iostream>
 
 namespace args
 {
-	types::Result<bool> IntValidator::validate(std::string& value)
+	template <typename T>
+	types::Result<bool> Validator<T>::validate(std::string& value)
+	{
+		return { false };
+	}
+
+	types::Result<bool> Validator<int>::validate(std::string& value)
 	{
 		std::string::const_iterator it = value.begin();
 
@@ -13,7 +18,7 @@ namespace args
 		return { !value.empty() && it == value.end() };
 	}
 
-	types::Result<bool> BoolValidator::validate(std::string& value)
+	types::Result<bool> Validator<bool>::validate(std::string& value)
 	{
 		std::string lowerStr;
 
@@ -23,7 +28,7 @@ namespace args
 		return{ lowerStr == "true" || lowerStr == "false" };
 	}
 
-	types::Result<bool> StringValidator::validate(std::string& value)
+	types::Result<bool> Validator<std::string>::validate(std::string& value)
 	{
 		if(value.empty())
 		{
